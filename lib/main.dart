@@ -1,4 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_sticky_header/flutter_sticky_header.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:virgo/my_date.dart';
+import 'package:virgo/person_model.dart';
+import 'package:provider/provider.dart';
+import 'dart:math' as math;
 
 void main() {
   runApp(MyApp());
@@ -8,110 +14,284 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
-        primarySwatch: Colors.blue,
-        // This makes the visual density adapt to the platform that you run
-        // the app on. For desktop platforms, the controls will be smaller and
-        // closer together (more dense) than on mobile platforms.
-        visualDensity: VisualDensity.adaptivePlatformDensity,
+    return ChangeNotifierProvider(
+      create: (_) => Persons()
+        ..add(Person('Tak', MyDate(month: 9, day: 5)))
+        ..add(Person('Ven', MyDate(month: 11, day: 7)))
+        ..add(Person('Nat', MyDate(month: 8, day: 30)))
+        ..add(Person('daniel',
+            MyDate(month: DateTime.now().month, day: DateTime.now().day)))
+        ..add(Person('sam',
+            MyDate(month: DateTime.now().month, day: DateTime.now().day + 6)))
+        ..add(Person('tiffany',
+            MyDate(month: DateTime.now().month, day: DateTime.now().day + 1))),
+      child: MaterialApp(
+        title: 'Flutter Demo',
+        theme: ThemeData(
+          backgroundColor: Colors.grey[900],
+          scaffoldBackgroundColor: Colors.grey[900],
+          appBarTheme: AppBarTheme(
+            brightness: Brightness.dark,
+            color: Colors.grey[800],
+          ),
+          primaryColorBrightness: Brightness.dark,
+          primaryColor: Colors.grey[900],
+          accentColorBrightness: Brightness.dark,
+          accentColor: Color(0xff7c5abf),
+          textTheme: GoogleFonts.merriweatherTextTheme(),
+          visualDensity: VisualDensity.adaptivePlatformDensity,
+        ),
+        home: Home(),
       ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-  final String title;
-
+class Home extends StatefulWidget {
   @override
-  _MyHomePageState createState() => _MyHomePageState();
+  _HomeState createState() => _HomeState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
-  }
-
+class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
     return Scaffold(
       appBar: AppBar(
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
-      ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Invoke "debug painting" (press "p" in the console, choose the
-          // "Toggle Debug Paint" action from the Flutter Inspector in Android
-          // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
-          // to see the wireframe for each widget.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
-            ),
-          ],
+        elevation: 0.0,
+        title: Center(
+          child: Text(
+            'Virgo',
+            style: TextStyle(fontSize: 48.0),
+          ),
         ),
       ),
+      body: Consumer<Persons>(
+        builder: (context, persons, child) => persons.persons.isEmpty
+            ? Center(
+                child: Text(
+                  'You have no friends :(',
+                  style: TextStyle(color: Colors.white),
+                ),
+              )
+            : _buildBirthdayList(persons),
+      ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
         child: Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+        onPressed: () {
+          Provider.of<Persons>(context, listen: false)
+              .add(Person('Susan', MyDate(month: 9, day: 15)));
+        },
+      ),
     );
+  }
+
+  SliverPersistentHeader makeHeader(String headerText) {
+    return SliverPersistentHeader(
+      pinned: true,
+      delegate: _SliverAppBarDelegate(
+        minHeight: 40.0,
+        maxHeight: 40.0,
+        child: Container(
+          color: Theme.of(context).accentColor,
+          child: Center(
+              child: Text(
+            headerText,
+            style: TextStyle(color: Colors.white, fontSize: 24),
+          )),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildBirthdayList(Persons persons) {
+    DateTime now = DateTime.now();
+
+    persons.sortFrom(now);
+    List<Widget> widgets = [makeHeader('Today is ${dateTimeToString(now)}')];
+
+    int closeness = 0;
+    int index = 0;
+    List<int> headerPos = [0, 0, 0, 0];
+
+    // if there are birthdays today, create a new SliverStickyHeader for people
+    // with birthdays today
+    if (persons.persons[index].birthday.month == now.month &&
+        persons.persons[index].birthday.day == now.day) {
+      while (persons.persons[index].birthday.month == now.month &&
+          persons.persons[index].birthday.day == now.day) {
+        if (++index == persons.persons.length) break;
+      }
+      headerPos[0] = index;
+      widgets.add(SliverStickyHeader(
+        header: _buildImportanceHeader('Today!'),
+        sliver: SliverList(
+          delegate: SliverChildBuilderDelegate(
+            (context, i) => _buildBirthdayListTile(persons.persons[i]),
+            childCount: headerPos[0],
+          ),
+        ),
+      ));
+    }
+
+    // if there are birthdays tomorrow, create a new SliverStickyHead for people
+    // with birthdays tomorrow
+    DateTime dateTime = persons.persons[index].birthday.toDateTime();
+    if (dateTime.difference(now).inDays <= 1) {
+      while (dateTime.difference(now).inDays <= 1) {
+        if (++index == persons.persons.length) break;
+        dateTime = persons.persons[index].birthday.toDateTime();
+      }
+      headerPos[1] = index;
+      widgets.add(SliverStickyHeader(
+        header: _buildImportanceHeader('Tomorrow!'),
+        sliver: SliverList(
+          delegate: SliverChildBuilderDelegate(
+            (context, i) =>
+                _buildBirthdayListTile(persons.persons[headerPos[0] + i]),
+            childCount: headerPos[1] - headerPos[0],
+          ),
+        ),
+      ));
+    } else {
+      headerPos[1] = headerPos[0];
+    }
+
+    // if there are birthdays within a week, create a new SliverStickyHead for
+    // people with birthdays within a week
+    dateTime = persons.persons[index].birthday.toDateTime();
+    if (dateTime.difference(now).inDays <= 7) {
+      while (dateTime.difference(now).inDays <= 7) {
+        if (++index == persons.persons.length) break;
+        dateTime = persons.persons[index].birthday.toDateTime();
+      }
+      headerPos[2] = index;
+      widgets.add(SliverStickyHeader(
+        header: _buildImportanceHeader('In a week'),
+        sliver: SliverList(
+          delegate: SliverChildBuilderDelegate(
+            (context, i) =>
+                _buildBirthdayListTile(persons.persons[headerPos[1] + i]),
+            childCount: headerPos[2] - headerPos[1],
+          ),
+        ),
+      ));
+    } else {
+      headerPos[2] = headerPos[1];
+    }
+
+    // if there are birthdays next month, create a new SliverStickyHead for
+    // people with birthdays wnext month
+    dateTime = persons.persons[index].birthday.toDateTime();
+    if (dateTime.month == now.month + 1 || dateTime.month == now.month) {
+      while (dateTime.month == now.month + 1 || dateTime.month == now.month) {
+        if (++index == persons.persons.length) break;
+        dateTime = persons.persons[index].birthday.toDateTime();
+      }
+      headerPos[3] = index;
+      widgets.add(SliverStickyHeader(
+        header: _buildImportanceHeader('In a month'),
+        sliver: SliverList(
+          delegate: SliverChildBuilderDelegate(
+            (context, i) =>
+                _buildBirthdayListTile(persons.persons[headerPos[2] + i]),
+            childCount: headerPos[3] - headerPos[2],
+          ),
+        ),
+      ));
+    } else {
+      headerPos[3] = headerPos[2];
+    }
+
+    // if there are any other people remaining, create a new SliverStickyHead
+    // for them
+    if (headerPos[3] < persons.persons.length) {
+      widgets.add(SliverStickyHeader(
+        header: _buildImportanceHeader('In a while'),
+        sliver: SliverList(
+          delegate: SliverChildBuilderDelegate(
+            (context, i) =>
+                _buildBirthdayListTile(persons.persons[headerPos[3] + i]),
+            childCount: persons.persons.length - headerPos[3],
+          ),
+        ),
+      ));
+    }
+
+    return CustomScrollView(
+      slivers: widgets,
+    );
+  } // _buildBirthdayList
+
+  Widget _buildBirthdayListTile(Person person) {
+    return Container(
+      height: 80,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>[
+          SizedBox(width: 12),
+          CircleAvatar(
+            radius: 27,
+            backgroundColor: Colors.white,
+          ),
+          SizedBox(width: 15),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Text(
+                '${person.name}',
+                textAlign: TextAlign.left,
+                style: TextStyle(color: Colors.white, fontSize: 24),
+              ),
+              Text(
+                '${person.birthday.toString()}',
+                textAlign: TextAlign.left,
+                style: TextStyle(color: Colors.white, fontSize: 18),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildImportanceHeader(String importance) {
+    return Container(
+      height: 40.0,
+      color: Theme.of(context).accentColor,
+      padding: EdgeInsets.symmetric(horizontal: 16.0),
+      alignment: Alignment.center,
+      child: Text(
+        importance,
+        style: const TextStyle(color: Colors.white, fontSize: 24),
+      ),
+    );
+  }
+}
+
+class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
+  _SliverAppBarDelegate({
+    @required this.minHeight,
+    @required this.maxHeight,
+    @required this.child,
+  });
+  final double minHeight;
+  final double maxHeight;
+  final Widget child;
+  @override
+  double get minExtent => minHeight;
+  @override
+  double get maxExtent => math.max(maxHeight, minHeight);
+  @override
+  Widget build(
+      BuildContext context, double shrinkOffset, bool overlapsContent) {
+    return new SizedBox.expand(child: child);
+  }
+
+  @override
+  bool shouldRebuild(_SliverAppBarDelegate oldDelegate) {
+    return maxHeight != oldDelegate.maxHeight ||
+        minHeight != oldDelegate.minHeight ||
+        child != oldDelegate.child;
   }
 }
