@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import 'package:virgo/models/friend.dart';
 
+// ignore: must_be_immutable
 class Profile extends StatefulWidget {
   Friend friend;
   Profile({this.friend});
@@ -70,6 +72,7 @@ class _ProfileState extends State<Profile> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: <Widget>[
                     Expanded(
+                      flex: 2,
                       child: IntrinsicHeight(
                         child: Row(
                           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -101,42 +104,50 @@ class _ProfileState extends State<Profile> {
                         ),
                       ),
                     ),
-                    SizedBox(height: 10.0),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.max,
-                      children: <Widget>[
-                        Text(
-                          'Notify me: ',
-                          textAlign: TextAlign.start,
-                          style: TextStyle(
-                            fontSize: 18.0,
-                            fontStyle: FontStyle.italic,
-                            color: Colors.white,
+                    Flexible(
+                      flex: 1,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.max,
+                        children: <Widget>[
+                          Padding(
+                            padding: const EdgeInsets.only(top: 8.0),
+                            child: Text(
+                              'Notify me: ',
+                              textAlign: TextAlign.start,
+                              style: TextStyle(
+                                fontSize: 18.0,
+                                fontStyle: FontStyle.italic,
+                                color: Colors.white,
+                              ),
+                            ),
                           ),
-                        ),
-                        Expanded(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: <Widget>[
-                              MyCheckBoxTile(
-                                label: 'in a day',
-                              ),
-                              SizedBox(height: 16.0),
-                              MyCheckBoxTile(
-                                label: 'in a week',
-                              ),
-                              SizedBox(height: 16.0),
-                              MyCheckBoxTile(
-                                label: 'in a month',
-                              ),
-                            ],
-                          ),
-                        )
-                      ],
+                          Expanded(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: <Widget>[
+                                MyCheckBoxTile(
+                                  label: 'in a day',
+                                  index: 0,
+                                  friend: widget.friend,
+                                ),
+                                MyCheckBoxTile(
+                                  label: 'in a week',
+                                  index: 1,
+                                  friend: widget.friend,
+                                ),
+                                MyCheckBoxTile(
+                                  label: 'in a month',
+                                  index: 2,
+                                  friend: widget.friend,
+                                ),
+                              ],
+                            ),
+                          )
+                        ],
+                      ),
                     ),
-                    SizedBox(height: 40.0)
                   ],
                 ),
               ),
@@ -150,25 +161,32 @@ class _ProfileState extends State<Profile> {
 
 class MyCheckBoxTile extends StatefulWidget {
   final String label;
-  MyCheckBoxTile({this.label});
+  final int index;
+  final Friend friend;
+  MyCheckBoxTile({this.label, this.index, this.friend});
 
   @override
   _MyCheckBoxTileState createState() => _MyCheckBoxTileState();
 }
 
 class _MyCheckBoxTileState extends State<MyCheckBoxTile> {
-  bool _isSelected = false;
-
   @override
   Widget build(BuildContext context) {
+    int f = Provider.of<FriendsList>(context, listen: false)
+        .friends
+        .indexOf(widget.friend);
+    bool _isSelected = Provider.of<FriendsList>(context, listen: false)
+        .friends[f]
+        .notifyMe[widget.index];
     return InkWell(
       onTap: () {
         setState(() {
-          _isSelected = !_isSelected;
+          Provider.of<FriendsList>(context, listen: false)
+              .updateNotifyMe(widget.friend, widget.index);
         });
       },
       child: Padding(
-        padding: EdgeInsets.only(left: 5.0),
+        padding: EdgeInsets.only(left: 5.0, top: 8.0, bottom: 8.0),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -195,7 +213,8 @@ class _MyCheckBoxTileState extends State<MyCheckBoxTile> {
                 value: _isSelected,
                 onChanged: (bool value) {
                   setState(() {
-                    _isSelected = !_isSelected;
+                    Provider.of<FriendsList>(context, listen: false)
+                        .updateNotifyMe(widget.friend, widget.index);
                   });
                 },
               ),

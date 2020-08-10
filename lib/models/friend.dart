@@ -59,6 +59,22 @@ class FriendsList extends ChangeNotifier {
       print('Error: cannot find Friend to update');
   }
 
+  updateNotes(Friend friend, String notes) {
+    int f = _list.indexOf(friend);
+    _list[f].notes = notes;
+    notifyListeners();
+  }
+
+  updateNotifyMe(Friend friend, int index) {
+    if (index < 0 || index > 3) {
+      print('Error: index out of bounds: notifyMe list');
+    } else {
+      int f = _list.indexOf(friend);
+      _list[f].notifyMe[index] ^= true;
+      notifyListeners();
+    }
+  }
+
   sortFrom(DateTime today) {
     _list.sort((a, b) {
       if (a.birthday.month == b.birthday.month &&
