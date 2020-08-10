@@ -88,10 +88,13 @@ class _ProfileState extends State<Profile> {
                               lastDate: DateTime(DateTime.now().year + 1,
                                   DateTime.now().month, DateTime.now().day),
                             );
-                            setState(() {
-                              Provider.of<FriendsList>(context, listen: false)
-                                  .updateBirthday(widget.friend, selectedDate);
-                            });
+                            if (selectedDate != null) {
+                              setState(() {
+                                Provider.of<FriendsList>(context, listen: false)
+                                    .updateBirthday(
+                                        widget.friend, selectedDate);
+                              });
+                            }
                           },
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
