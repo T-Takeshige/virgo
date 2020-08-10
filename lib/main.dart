@@ -28,7 +28,7 @@ class MyApp extends StatelessWidget {
         ..add(Friend('tiffany',
             MyDate(month: DateTime.now().month, day: DateTime.now().day + 1))),
       child: MaterialApp(
-        title: 'Flutter Demo',
+        title: 'Virgo',
         theme: ThemeData(
           backgroundColor: Colors.grey[900],
           scaffoldBackgroundColor: Color(0xff0F0032),
