@@ -6,6 +6,8 @@ import 'package:virgo/models/friend.dart';
 import 'package:provider/provider.dart';
 import 'dart:math' as math;
 
+import 'package:virgo/profile_page.dart';
+
 void main() {
   runApp(MyApp());
 }
@@ -29,7 +31,7 @@ class MyApp extends StatelessWidget {
         title: 'Flutter Demo',
         theme: ThemeData(
           backgroundColor: Colors.grey[900],
-          scaffoldBackgroundColor: Colors.grey[900],
+          scaffoldBackgroundColor: Color(0xff0F0032),
           appBarTheme: AppBarTheme(
             brightness: Brightness.dark,
             color: Colors.grey[800],
@@ -56,12 +58,19 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        elevation: 0.0,
-        title: Center(
-          child: Text(
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(65.0),
+        child: AppBar(
+          centerTitle: true,
+          elevation: 0.0,
+          title: Text(
             'Virgo',
-            style: TextStyle(fontSize: 48.0),
+            style: GoogleFonts.merriweather(
+                textStyle: TextStyle(
+              fontSize: 48,
+              fontStyle: FontStyle.italic,
+              fontWeight: FontWeight.w900,
+            )),
           ),
         ),
       ),
@@ -223,34 +232,44 @@ class _HomeState extends State<Home> {
   } // _buildBirthdayList
 
   Widget _buildBirthdayListTile(Friend friend) {
-    return Container(
-      height: 80,
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>[
-          SizedBox(width: 12),
-          CircleAvatar(
-            radius: 27,
-            backgroundColor: Colors.white,
+    return InkWell(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => Profile(friend: friend),
           ),
-          SizedBox(width: 15),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Text(
-                '${friend.name}',
-                textAlign: TextAlign.left,
-                style: TextStyle(color: Colors.white, fontSize: 24),
-              ),
-              Text(
-                '${friend.birthday.toString()}',
-                textAlign: TextAlign.left,
-                style: TextStyle(color: Colors.white, fontSize: 18),
-              ),
-            ],
-          ),
-        ],
+        );
+      },
+      child: Container(
+        height: 80,
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            SizedBox(width: 12),
+            CircleAvatar(
+              radius: 27,
+              backgroundColor: Colors.white,
+            ),
+            SizedBox(width: 15),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text(
+                  '${friend.name}',
+                  textAlign: TextAlign.left,
+                  style: TextStyle(color: Colors.white, fontSize: 24),
+                ),
+                Text(
+                  '${friend.birthday.toString()}',
+                  textAlign: TextAlign.left,
+                  style: TextStyle(color: Colors.white, fontSize: 18),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
