@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:virgo/accessories/astrology_icons.dart';
 import 'package:virgo/models/friend.dart';
 
 // ignore: must_be_immutable
@@ -65,6 +66,7 @@ class _ProfileState extends State<Profile> {
                     color: Theme.of(context).accentColor,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: <Widget>[
                         CircleAvatar(
                           radius: 62,
@@ -77,12 +79,35 @@ class _ProfileState extends State<Profile> {
                               color: Colors.white,
                               fontStyle: FontStyle.italic),
                         ),
-                        Text(
-                          widget.friend.birthday.toString(),
-                          style: TextStyle(
-                              fontSize: 24,
-                              color: Colors.white,
-                              fontStyle: FontStyle.italic),
+                        InkWell(
+                          onTap: () async {
+                            DateTime selectedDate = await showDatePicker(
+                              context: context,
+                              initialDate: widget.friend.birthday.toDateTime(),
+                              firstDate: DateTime.now(),
+                              lastDate: DateTime(DateTime.now().year + 1,
+                                  DateTime.now().month, DateTime.now().day),
+                            );
+                            setState(() {
+                              Provider.of<FriendsList>(context, listen: false)
+                                  .updateBirthday(widget.friend, selectedDate);
+                            });
+                          },
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              Text(
+                                widget.friend.birthday.toString(),
+                                style: TextStyle(
+                                  fontSize: 24,
+                                  color: Colors.white,
+                                  fontStyle: FontStyle.italic,
+                                ),
+                              ),
+                              SizedBox(width: 7.0),
+                              widget.friend.birthday.toAstrologyIcon(),
+                            ],
+                          ),
                         ),
                       ],
                     ),

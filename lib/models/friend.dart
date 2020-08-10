@@ -59,6 +59,12 @@ class FriendsList extends ChangeNotifier {
       print('Error: cannot find Friend to update');
   }
 
+  updateBirthday(Friend friend, DateTime birthday) {
+    int f = _list.indexOf(friend);
+    _list[f].birthday = MyDate(month: birthday.month, day: birthday.day);
+    notifyListeners();
+  }
+
   updateNotes(Friend friend, String notes) {
     int f = _list.indexOf(friend);
     _list[f].notes = notes;
