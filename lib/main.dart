@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import 'dart:math' as math;
 
 import 'package:virgo/profile_page.dart';
+import 'package:virgo/styles.dart';
 
 void main() {
   runApp(MyApp());
@@ -31,15 +32,13 @@ class MyApp extends StatelessWidget {
         title: 'Virgo',
         theme: ThemeData(
           backgroundColor: Colors.grey[900],
-          scaffoldBackgroundColor: Color(0xff0F0032),
+          scaffoldBackgroundColor: themeNavy,
           appBarTheme: AppBarTheme(
             brightness: Brightness.dark,
             color: Colors.grey[800],
           ),
           primaryColorBrightness: Brightness.dark,
-          primaryColor: Colors.grey[900],
-          accentColorBrightness: Brightness.dark,
-          accentColor: Color(0xff7c5abf),
+          primaryColor: themeCornfield,
           textTheme: GoogleFonts.merriweatherTextTheme(),
           visualDensity: VisualDensity.adaptivePlatformDensity,
         ),
@@ -86,6 +85,7 @@ class _HomeState extends State<Home> {
       ),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
+        backgroundColor: Theme.of(context).primaryColor,
         onPressed: () {
           Provider.of<FriendsList>(context, listen: false)
               .add(Friend('Susan', MyDate(month: 9, day: 15)));
@@ -101,7 +101,7 @@ class _HomeState extends State<Home> {
         minHeight: 40.0,
         maxHeight: 40.0,
         child: Container(
-          color: Theme.of(context).accentColor,
+          color: Theme.of(context).primaryColor,
           child: Center(
               child: Text(
             headerText,
@@ -118,7 +118,6 @@ class _HomeState extends State<Home> {
     friendsList.sortFrom(now);
     List<Widget> widgets = [makeHeader('Today is ${dateTimeToString(now)}')];
 
-    int closeness = 0;
     int index = 0;
     List<int> headerPos = [0, 0, 0, 0];
 
@@ -167,7 +166,6 @@ class _HomeState extends State<Home> {
 
     // if there are birthdays within a week, create a new SliverStickyHead for
     // people with birthdays within a week
-    dateTime = friendsList.friends[index].birthday.toDateTime();
     if (dateTime.difference(now).inDays <= 7) {
       while (dateTime.difference(now).inDays <= 7) {
         if (++index == friendsList.friends.length) break;
@@ -190,7 +188,6 @@ class _HomeState extends State<Home> {
 
     // if there are birthdays next month, create a new SliverStickyHead for
     // people with birthdays wnext month
-    dateTime = friendsList.friends[index].birthday.toDateTime();
     if (dateTime.month == now.month + 1 || dateTime.month == now.month) {
       while (dateTime.month == now.month + 1 || dateTime.month == now.month) {
         if (++index == friendsList.friends.length) break;
@@ -275,9 +272,30 @@ class _HomeState extends State<Home> {
   }
 
   Widget _buildImportanceHeader(String importance) {
+    Color color;
+    switch (importance) {
+      case 'Today!':
+        color = themeLilac;
+        break;
+      case 'Tomorrow!':
+        color = themeLilac1;
+        break;
+      case 'In a week':
+        color = themeLilac2;
+        break;
+      case 'In a month':
+        color = themeLilac3;
+        break;
+      case 'In a while':
+        color = themeLilac4;
+        break;
+      default:
+        color = themeCornfield;
+    }
+
     return Container(
       height: 40.0,
-      color: Theme.of(context).accentColor,
+      color: color,
       padding: EdgeInsets.symmetric(horizontal: 16.0),
       alignment: Alignment.center,
       child: Text(

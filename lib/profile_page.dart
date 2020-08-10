@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:virgo/accessories/astrology_icons.dart';
 import 'package:virgo/models/friend.dart';
+import 'package:virgo/styles.dart';
 
 // ignore: must_be_immutable
 class Profile extends StatefulWidget {
@@ -29,6 +29,23 @@ class _ProfileState extends State<Profile> {
 
   @override
   Widget build(BuildContext context) {
+    DateTime now = DateTime.now();
+    Color birthdayColor;
+    if (widget.friend.birthday.month == now.month &&
+        widget.friend.birthday.day == now.day)
+      birthdayColor = themeLilac;
+    else {
+      DateTime birthday = widget.friend.birthday.toDateTime();
+      if (birthday.difference(now).inDays <= 1)
+        birthdayColor = themeLilac1;
+      else if (birthday.difference(now).inDays <= 7)
+        birthdayColor = themeLilac2;
+      else if (birthday.month == now.month + 1 || birthday.month == now.month)
+        birthdayColor = themeLilac3;
+      else
+        birthdayColor = themeLilac4;
+    }
+
     return GestureDetector(
       onTap: () {
         FocusScopeNode currentFocus = FocusScope.of(context);
@@ -63,7 +80,7 @@ class _ProfileState extends State<Profile> {
                 Flexible(
                   flex: 4,
                   child: Container(
-                    color: Theme.of(context).accentColor,
+                    color: birthdayColor,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       crossAxisAlignment: CrossAxisAlignment.center,
@@ -146,7 +163,7 @@ class _ProfileState extends State<Profile> {
                                       borderRadius: BorderRadius.all(
                                           Radius.circular(12.0)),
                                       border: Border.all(
-                                        color: Color(0xff9DD092),
+                                        color: themeCornfield,
                                         width: 5.0,
                                       ),
                                     ),
@@ -273,7 +290,7 @@ class _MyCheckBoxTileState extends State<MyCheckBoxTile> {
               width: 24.0,
               child: Checkbox(
                 activeColor: Colors.white,
-                checkColor: Theme.of(context).accentColor,
+                checkColor: themeNavy,
                 hoverColor: Colors.white,
                 focusColor: Colors.white,
                 value: _isSelected,
