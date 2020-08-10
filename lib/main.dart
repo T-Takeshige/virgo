@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_sticky_header/flutter_sticky_header.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:virgo/my_date.dart';
-import 'package:virgo/person_model.dart';
+import 'package:virgo/models/my_date.dart';
+import 'package:virgo/models/friend.dart';
 import 'package:provider/provider.dart';
 import 'dart:math' as math;
 
@@ -15,15 +15,15 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (_) => Persons()
-        ..add(Person('Tak', MyDate(month: 9, day: 5)))
-        ..add(Person('Ven', MyDate(month: 11, day: 7)))
-        ..add(Person('Nat', MyDate(month: 8, day: 30)))
-        ..add(Person('daniel',
+      create: (_) => FriendsList()
+        ..add(Friend('Tak', MyDate(month: 9, day: 5)))
+        ..add(Friend('Ven', MyDate(month: 11, day: 7)))
+        ..add(Friend('Nat', MyDate(month: 8, day: 30)))
+        ..add(Friend('daniel',
             MyDate(month: DateTime.now().month, day: DateTime.now().day)))
-        ..add(Person('sam',
+        ..add(Friend('sam',
             MyDate(month: DateTime.now().month, day: DateTime.now().day + 6)))
-        ..add(Person('tiffany',
+        ..add(Friend('tiffany',
             MyDate(month: DateTime.now().month, day: DateTime.now().day + 1))),
       child: MaterialApp(
         title: 'Flutter Demo',
@@ -65,21 +65,21 @@ class _HomeState extends State<Home> {
           ),
         ),
       ),
-      body: Consumer<Persons>(
-        builder: (context, persons, child) => persons.persons.isEmpty
+      body: Consumer<FriendsList>(
+        builder: (context, friendsList, child) => friendsList.friends.isEmpty
             ? Center(
                 child: Text(
                   'You have no friends :(',
                   style: TextStyle(color: Colors.white),
                 ),
               )
-            : _buildBirthdayList(persons),
+            : _buildBirthdayList(friendsList),
       ),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
         onPressed: () {
-          Provider.of<Persons>(context, listen: false)
-              .add(Person('Susan', MyDate(month: 9, day: 15)));
+          Provider.of<FriendsList>(context, listen: false)
+              .add(Friend('Susan', MyDate(month: 9, day: 15)));
         },
       ),
     );
@@ -103,10 +103,10 @@ class _HomeState extends State<Home> {
     );
   }
 
-  Widget _buildBirthdayList(Persons persons) {
+  Widget _buildBirthdayList(FriendsList friendsList) {
     DateTime now = DateTime.now();
 
-    persons.sortFrom(now);
+    friendsList.sortFrom(now);
     List<Widget> widgets = [makeHeader('Today is ${dateTimeToString(now)}')];
 
     int closeness = 0;
@@ -115,18 +115,18 @@ class _HomeState extends State<Home> {
 
     // if there are birthdays today, create a new SliverStickyHeader for people
     // with birthdays today
-    if (persons.persons[index].birthday.month == now.month &&
-        persons.persons[index].birthday.day == now.day) {
-      while (persons.persons[index].birthday.month == now.month &&
-          persons.persons[index].birthday.day == now.day) {
-        if (++index == persons.persons.length) break;
+    if (friendsList.friends[index].birthday.month == now.month &&
+        friendsList.friends[index].birthday.day == now.day) {
+      while (friendsList.friends[index].birthday.month == now.month &&
+          friendsList.friends[index].birthday.day == now.day) {
+        if (++index == friendsList.friends.length) break;
       }
       headerPos[0] = index;
       widgets.add(SliverStickyHeader(
         header: _buildImportanceHeader('Today!'),
         sliver: SliverList(
           delegate: SliverChildBuilderDelegate(
-            (context, i) => _buildBirthdayListTile(persons.persons[i]),
+            (context, i) => _buildBirthdayListTile(friendsList.friends[i]),
             childCount: headerPos[0],
           ),
         ),
@@ -135,11 +135,11 @@ class _HomeState extends State<Home> {
 
     // if there are birthdays tomorrow, create a new SliverStickyHead for people
     // with birthdays tomorrow
-    DateTime dateTime = persons.persons[index].birthday.toDateTime();
+    DateTime dateTime = friendsList.friends[index].birthday.toDateTime();
     if (dateTime.difference(now).inDays <= 1) {
       while (dateTime.difference(now).inDays <= 1) {
-        if (++index == persons.persons.length) break;
-        dateTime = persons.persons[index].birthday.toDateTime();
+        if (++index == friendsList.friends.length) break;
+        dateTime = friendsList.friends[index].birthday.toDateTime();
       }
       headerPos[1] = index;
       widgets.add(SliverStickyHeader(
@@ -147,7 +147,7 @@ class _HomeState extends State<Home> {
         sliver: SliverList(
           delegate: SliverChildBuilderDelegate(
             (context, i) =>
-                _buildBirthdayListTile(persons.persons[headerPos[0] + i]),
+                _buildBirthdayListTile(friendsList.friends[headerPos[0] + i]),
             childCount: headerPos[1] - headerPos[0],
           ),
         ),
@@ -158,11 +158,11 @@ class _HomeState extends State<Home> {
 
     // if there are birthdays within a week, create a new SliverStickyHead for
     // people with birthdays within a week
-    dateTime = persons.persons[index].birthday.toDateTime();
+    dateTime = friendsList.friends[index].birthday.toDateTime();
     if (dateTime.difference(now).inDays <= 7) {
       while (dateTime.difference(now).inDays <= 7) {
-        if (++index == persons.persons.length) break;
-        dateTime = persons.persons[index].birthday.toDateTime();
+        if (++index == friendsList.friends.length) break;
+        dateTime = friendsList.friends[index].birthday.toDateTime();
       }
       headerPos[2] = index;
       widgets.add(SliverStickyHeader(
@@ -170,7 +170,7 @@ class _HomeState extends State<Home> {
         sliver: SliverList(
           delegate: SliverChildBuilderDelegate(
             (context, i) =>
-                _buildBirthdayListTile(persons.persons[headerPos[1] + i]),
+                _buildBirthdayListTile(friendsList.friends[headerPos[1] + i]),
             childCount: headerPos[2] - headerPos[1],
           ),
         ),
@@ -181,11 +181,11 @@ class _HomeState extends State<Home> {
 
     // if there are birthdays next month, create a new SliverStickyHead for
     // people with birthdays wnext month
-    dateTime = persons.persons[index].birthday.toDateTime();
+    dateTime = friendsList.friends[index].birthday.toDateTime();
     if (dateTime.month == now.month + 1 || dateTime.month == now.month) {
       while (dateTime.month == now.month + 1 || dateTime.month == now.month) {
-        if (++index == persons.persons.length) break;
-        dateTime = persons.persons[index].birthday.toDateTime();
+        if (++index == friendsList.friends.length) break;
+        dateTime = friendsList.friends[index].birthday.toDateTime();
       }
       headerPos[3] = index;
       widgets.add(SliverStickyHeader(
@@ -193,7 +193,7 @@ class _HomeState extends State<Home> {
         sliver: SliverList(
           delegate: SliverChildBuilderDelegate(
             (context, i) =>
-                _buildBirthdayListTile(persons.persons[headerPos[2] + i]),
+                _buildBirthdayListTile(friendsList.friends[headerPos[2] + i]),
             childCount: headerPos[3] - headerPos[2],
           ),
         ),
@@ -204,14 +204,14 @@ class _HomeState extends State<Home> {
 
     // if there are any other people remaining, create a new SliverStickyHead
     // for them
-    if (headerPos[3] < persons.persons.length) {
+    if (headerPos[3] < friendsList.friends.length) {
       widgets.add(SliverStickyHeader(
         header: _buildImportanceHeader('In a while'),
         sliver: SliverList(
           delegate: SliverChildBuilderDelegate(
             (context, i) =>
-                _buildBirthdayListTile(persons.persons[headerPos[3] + i]),
-            childCount: persons.persons.length - headerPos[3],
+                _buildBirthdayListTile(friendsList.friends[headerPos[3] + i]),
+            childCount: friendsList.friends.length - headerPos[3],
           ),
         ),
       ));
@@ -222,7 +222,7 @@ class _HomeState extends State<Home> {
     );
   } // _buildBirthdayList
 
-  Widget _buildBirthdayListTile(Person person) {
+  Widget _buildBirthdayListTile(Friend friend) {
     return Container(
       height: 80,
       child: Row(
@@ -239,12 +239,12 @@ class _HomeState extends State<Home> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Text(
-                '${person.name}',
+                '${friend.name}',
                 textAlign: TextAlign.left,
                 style: TextStyle(color: Colors.white, fontSize: 24),
               ),
               Text(
-                '${person.birthday.toString()}',
+                '${friend.birthday.toString()}',
                 textAlign: TextAlign.left,
                 style: TextStyle(color: Colors.white, fontSize: 18),
               ),

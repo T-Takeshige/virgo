@@ -1,15 +1,15 @@
 import 'dart:collection';
 
 import 'package:flutter/cupertino.dart';
-import 'package:virgo/my_date.dart';
+import 'package:virgo/models/my_date.dart';
 
-class Person {
+class Friend {
   String _name;
   MyDate _birthday;
   String notes;
   List<bool> notifyMe;
 
-  Person(name, birthday) {
+  Friend(name, birthday) {
     this._name = name;
     this._birthday = birthday;
     this.notes = '';
@@ -33,55 +33,55 @@ class Person {
   }
 }
 
-class Persons extends ChangeNotifier {
-  final List<Person> _persons = [];
-  UnmodifiableListView<Person> get persons => UnmodifiableListView(_persons);
+class FriendsList extends ChangeNotifier {
+  final List<Friend> _list = [];
+  UnmodifiableListView<Friend> get friends => UnmodifiableListView(_list);
 
-  add(Person person) {
-    _persons.add(person);
+  add(Friend friend) {
+    _list.add(friend);
     notifyListeners();
   }
 
-  remove(Person person) {
-    bool success = _persons.remove(person);
+  remove(Friend friend) {
+    bool success = _list.remove(friend);
     if (success)
       notifyListeners();
     else
-      print('Error: cannot find person to delete');
+      print('Error: cannot find Friend to delete');
   }
 
-  update(Person oldPerson, Person newPerson) {
-    int index = _persons.indexOf(oldPerson);
+  update(Friend oldFriend, Friend newFriend) {
+    int index = _list.indexOf(oldFriend);
     if (index != -1) {
-      _persons[index] = newPerson;
+      _list[index] = newFriend;
       notifyListeners();
     } else
-      print('Error: cannot find person to update');
+      print('Error: cannot find Friend to update');
   }
 
   sortFrom(DateTime today) {
-    _persons.sort((a, b) {
+    _list.sort((a, b) {
       if (a.birthday.month == b.birthday.month &&
           a.birthday.day == b.birthday.day)
         return 0;
       else {
-        DateTime a_datetime =
+        DateTime aDatetime =
             DateTime(today.year, a.birthday.month, a.birthday.day);
-        if (a_datetime.month == today.month && a_datetime.day == today.day)
+        if (aDatetime.month == today.month && aDatetime.day == today.day)
           return 0;
-        if (a_datetime.isBefore(today))
-          a_datetime =
+        if (aDatetime.isBefore(today))
+          aDatetime =
               DateTime(today.year + 1, a.birthday.month, a.birthday.day);
 
-        DateTime b_datetime =
+        DateTime bDatetime =
             DateTime(today.year, b.birthday.month, b.birthday.day);
-        if (b_datetime.month == today.month && b_datetime.day == today.day)
+        if (bDatetime.month == today.month && bDatetime.day == today.day)
           return 1;
-        if (b_datetime.isBefore(today))
-          b_datetime =
+        if (bDatetime.isBefore(today))
+          bDatetime =
               DateTime(today.year + 1, b.birthday.month, b.birthday.day);
 
-        if (a_datetime.isAfter(b_datetime))
+        if (aDatetime.isAfter(bDatetime))
           return 1;
         else
           return 0;
