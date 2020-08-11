@@ -1,5 +1,4 @@
 import 'dart:collection';
-import 'dart:ffi';
 
 import 'package:flutter/cupertino.dart';
 import 'package:virgo/models/my_date.dart';
@@ -73,9 +72,9 @@ class FriendsList extends ChangeNotifier {
     notifyListeners();
   }
 
-  updateBirthday(Friend friend, DateTime birthday) {
+  updateBirthday(Friend friend, MyDate birthday) {
     int f = _list.indexOf(friend);
-    _list[f].birthday = MyDate(month: birthday.month, day: birthday.day);
+    _list[f].birthday = birthday;
     notifyListeners();
   }
 

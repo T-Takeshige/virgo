@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:virgo/birthday_picker.dart';
 import 'package:virgo/models/friend.dart';
 import 'package:virgo/styles.dart';
 
@@ -67,6 +68,7 @@ class _ProfileState extends State<Profile> {
                 fontSize: 48,
                 fontStyle: FontStyle.italic,
                 fontWeight: FontWeight.w900,
+                color: Theme.of(context).primaryColor,
               )),
             ),
           ),
@@ -87,8 +89,12 @@ class _ProfileState extends State<Profile> {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: <Widget>[
                           CircleAvatar(
-                            radius: 62,
-                            backgroundColor: Colors.white,
+                            radius: 63,
+                            backgroundColor: Theme.of(context).primaryColor,
+                            child: CircleAvatar(
+                              radius: 60,
+                              backgroundColor: Colors.white,
+                            ),
                           ),
                           InkWell(
                             onTap: () {
@@ -107,6 +113,8 @@ class _ProfileState extends State<Profile> {
                                     ),
                                     content: TextField(
                                       autofocus: true,
+                                      textCapitalization:
+                                          TextCapitalization.words,
                                       controller: nameTextFieldController,
                                       textInputAction: TextInputAction.done,
                                       style: TextStyle(color: Colors.white),
@@ -172,22 +180,21 @@ class _ProfileState extends State<Profile> {
                           ),
                           InkWell(
                             onTap: () async {
-                              DateTime selectedDate = await showDatePicker(
+                              showDialog(
                                 context: context,
-                                initialDate:
-                                    widget.friend.birthday.toDateTime(),
-                                firstDate: DateTime.now(),
-                                lastDate: DateTime(DateTime.now().year + 1,
-                                    DateTime.now().month, DateTime.now().day),
-                              );
-                              if (selectedDate != null) {
-                                setState(() {
-                                  Provider.of<FriendsList>(context,
-                                          listen: false)
-                                      .updateBirthday(
-                                          widget.friend, selectedDate);
-                                });
-                              }
+                                builder: (context) => BirthdayPicker(
+                                  month: widget.friend.birthday.month,
+                                  day: widget.friend.birthday.day,
+                                ),
+                              ).then((date) {
+                                if (date != null) {
+                                  setState(() {
+                                    Provider.of<FriendsList>(context,
+                                            listen: false)
+                                        .updateBirthday(widget.friend, date);
+                                  });
+                                }
+                              });
                             },
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
@@ -239,16 +246,19 @@ class _ProfileState extends State<Profile> {
                                   ),
                                   Expanded(
                                     child: Container(
+                                      padding: EdgeInsets.all(4.0),
                                       decoration: BoxDecoration(
                                         color: Colors.white,
                                         borderRadius: BorderRadius.all(
                                             Radius.circular(12.0)),
                                         border: Border.all(
-                                          color: themeCornfield,
-                                          width: 5.0,
+                                          color: Theme.of(context).primaryColor,
+                                          width: 3.0,
                                         ),
                                       ),
                                       child: TextField(
+                                        textCapitalization:
+                                            TextCapitalization.sentences,
                                         decoration: InputDecoration.collapsed(
                                             hintText: 'Write notes here!'),
                                         textInputAction: TextInputAction.done,
@@ -293,16 +303,31 @@ class _ProfileState extends State<Profile> {
                                         label: 'in a day',
                                         index: 0,
                                         friend: widget.friend,
+                                        onChanged: () => setState(() =>
+                                            Provider.of<FriendsList>(context,
+                                                    listen: false)
+                                                .updateNotifyMe(
+                                                    widget.friend, 0)),
                                       ),
                                       MyCheckBoxTile(
                                         label: 'in a week',
                                         index: 1,
                                         friend: widget.friend,
+                                        onChanged: () => setState(() =>
+                                            Provider.of<FriendsList>(context,
+                                                    listen: false)
+                                                .updateNotifyMe(
+                                                    widget.friend, 1)),
                                       ),
                                       MyCheckBoxTile(
                                         label: 'in a month',
                                         index: 2,
                                         friend: widget.friend,
+                                        onChanged: () => setState(() =>
+                                            Provider.of<FriendsList>(context,
+                                                    listen: false)
+                                                .updateNotifyMe(
+                                                    widget.friend, 2)),
                                       ),
                                     ],
                                   ),
@@ -324,31 +349,19 @@ class _ProfileState extends State<Profile> {
   }
 }
 
-class MyCheckBoxTile extends StatefulWidget {
+class MyCheckBoxTile extends StatelessWidget {
   final String label;
   final int index;
   final Friend friend;
-  MyCheckBoxTile({this.label, this.index, this.friend});
+  final Function onChanged;
+  MyCheckBoxTile({this.label, this.index, this.friend, this.onChanged});
 
-  @override
-  _MyCheckBoxTileState createState() => _MyCheckBoxTileState();
-}
-
-class _MyCheckBoxTileState extends State<MyCheckBoxTile> {
   @override
   Widget build(BuildContext context) {
-    int f = Provider.of<FriendsList>(context, listen: false)
-        .friends
-        .indexOf(widget.friend);
-    bool _isSelected = Provider.of<FriendsList>(context, listen: false)
-        .friends[f]
-        .notifyMe[widget.index];
+    bool _isSelected = friend.notifyMe[index];
     return InkWell(
       onTap: () {
-        setState(() {
-          Provider.of<FriendsList>(context, listen: false)
-              .updateNotifyMe(widget.friend, widget.index);
-        });
+        onChanged();
       },
       child: Padding(
         padding: EdgeInsets.only(left: 5.0, top: 8.0, bottom: 8.0),
@@ -359,7 +372,7 @@ class _MyCheckBoxTileState extends State<MyCheckBoxTile> {
           children: <Widget>[
             Expanded(
               child: Text(
-                widget.label,
+                label,
                 style: TextStyle(
                   fontSize: 18.0,
                   fontStyle: FontStyle.italic,
@@ -370,18 +383,18 @@ class _MyCheckBoxTileState extends State<MyCheckBoxTile> {
             SizedBox(
               height: 24.0,
               width: 24.0,
-              child: Checkbox(
-                activeColor: Colors.white,
-                checkColor: themeNavy,
-                hoverColor: Colors.white,
-                focusColor: Colors.white,
-                value: _isSelected,
-                onChanged: (bool value) {
-                  setState(() {
-                    Provider.of<FriendsList>(context, listen: false)
-                        .updateNotifyMe(widget.friend, widget.index);
-                  });
-                },
+              child: Theme(
+                data: ThemeData(
+                  unselectedWidgetColor: Theme.of(context).primaryColor,
+                ),
+                child: Checkbox(
+                  activeColor: Theme.of(context).primaryColor,
+                  checkColor: Colors.white,
+                  value: _isSelected,
+                  onChanged: (bool value) {
+                    onChanged();
+                  },
+                ),
               ),
             ),
           ],

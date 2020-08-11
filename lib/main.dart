@@ -65,11 +65,13 @@ class _HomeState extends State<Home> {
           title: Text(
             'Virgo',
             style: GoogleFonts.merriweather(
-                textStyle: TextStyle(
-              fontSize: 48,
-              fontStyle: FontStyle.italic,
-              fontWeight: FontWeight.w900,
-            )),
+              textStyle: TextStyle(
+                fontSize: 48,
+                fontStyle: FontStyle.italic,
+                fontWeight: FontWeight.w900,
+                color: Theme.of(context).primaryColor,
+              ),
+            ),
           ),
         ),
       ),
@@ -246,7 +248,11 @@ class _HomeState extends State<Home> {
             SizedBox(width: 12),
             CircleAvatar(
               radius: 27,
-              backgroundColor: Colors.white,
+              backgroundColor: Theme.of(context).primaryColor,
+              child: CircleAvatar(
+                radius: 25,
+                backgroundColor: Colors.white,
+              ),
             ),
             SizedBox(width: 15),
             Column(
