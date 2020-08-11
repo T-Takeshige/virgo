@@ -1,4 +1,5 @@
 import 'dart:collection';
+import 'dart:ffi';
 
 import 'package:flutter/cupertino.dart';
 import 'package:virgo/models/my_date.dart';
@@ -57,6 +58,19 @@ class FriendsList extends ChangeNotifier {
       notifyListeners();
     } else
       print('Error: cannot find Friend to update');
+  }
+
+  bool isUniqueName(String name) {
+    for (int i = 0; i < _list.length; i++)
+      if (_list[i].name == name) return false;
+
+    return true;
+  }
+
+  updateName(Friend friend, String name) {
+    int f = _list.indexOf(friend);
+    _list[f].name = name;
+    notifyListeners();
   }
 
   updateBirthday(Friend friend, DateTime birthday) {

@@ -71,172 +71,254 @@ class _ProfileState extends State<Profile> {
             ),
           ),
         ),
-        body: SingleChildScrollView(
-          child: Container(
-            height: (MediaQuery.of(context).size.height - 65) * 0.95,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: <Widget>[
-                Flexible(
-                  flex: 4,
-                  child: Container(
-                    color: birthdayColor,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: <Widget>[
-                        CircleAvatar(
-                          radius: 62,
-                          backgroundColor: Colors.white,
-                        ),
-                        Text(
-                          widget.friend.name,
-                          style: TextStyle(
-                              fontSize: 36,
-                              color: Colors.white,
-                              fontStyle: FontStyle.italic),
-                        ),
-                        InkWell(
-                          onTap: () async {
-                            DateTime selectedDate = await showDatePicker(
-                              context: context,
-                              initialDate: widget.friend.birthday.toDateTime(),
-                              firstDate: DateTime.now(),
-                              lastDate: DateTime(DateTime.now().year + 1,
-                                  DateTime.now().month, DateTime.now().day),
-                            );
-                            if (selectedDate != null) {
-                              setState(() {
-                                Provider.of<FriendsList>(context, listen: false)
-                                    .updateBirthday(
-                                        widget.friend, selectedDate);
-                              });
-                            }
-                          },
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: <Widget>[
-                              Text(
-                                widget.friend.birthday.toString(),
-                                style: TextStyle(
-                                  fontSize: 24,
-                                  color: Colors.white,
-                                  fontStyle: FontStyle.italic,
-                                ),
-                              ),
-                              SizedBox(width: 7.0),
-                              widget.friend.birthday.toAstrologyIcon(),
-                            ],
+        body: Consumer<FriendsList>(builder: (context, friendsList, child) {
+          return SingleChildScrollView(
+            child: Container(
+              height: (MediaQuery.of(context).size.height - 65) * 0.95,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: <Widget>[
+                  Flexible(
+                    flex: 4,
+                    child: Container(
+                      color: birthdayColor,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: <Widget>[
+                          CircleAvatar(
+                            radius: 62,
+                            backgroundColor: Colors.white,
                           ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                Flexible(
-                  flex: 6,
-                  child: Container(
-                    padding:
-                        EdgeInsets.symmetric(horizontal: 24.0, vertical: 10.0),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: <Widget>[
-                        Expanded(
-                          flex: 2,
-                          child: IntrinsicHeight(
+                          InkWell(
+                            onTap: () {
+                              showDialog(
+                                context: context,
+                                builder: (context) {
+                                  final nameTextFieldController =
+                                      TextEditingController()
+                                        ..text = widget.friend.name;
+                                  return AlertDialog(
+                                    backgroundColor: Theme.of(context)
+                                        .scaffoldBackgroundColor,
+                                    title: Text(
+                                      'Edit name',
+                                      style: TextStyle(color: Colors.white),
+                                    ),
+                                    content: TextField(
+                                      autofocus: true,
+                                      controller: nameTextFieldController,
+                                      textInputAction: TextInputAction.done,
+                                      style: TextStyle(color: Colors.white),
+                                    ),
+                                    actions: [
+                                      RaisedButton(
+                                        child: Text('Cancel'),
+                                        color: Theme.of(context).primaryColor,
+                                        onPressed: () =>
+                                            Navigator.of(context).pop(null),
+                                      ),
+                                      RaisedButton(
+                                        child: Text('Confirm'),
+                                        color: Theme.of(context).primaryColor,
+                                        onPressed: () => Navigator.of(context)
+                                            .pop(nameTextFieldController.text),
+                                      ),
+                                    ],
+                                  );
+                                },
+                              ).then((name) {
+                                if (name != null) {
+                                  if (widget.friend.name == name) {
+                                    Scaffold.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text(
+                                            'Press the name then enter a new name to change the name.'),
+                                      ),
+                                    );
+                                  } else if (friendsList.isUniqueName(name)) {
+                                    setState(() {
+                                      friendsList.updateName(
+                                          widget.friend, name);
+                                    });
+                                  } else {
+                                    Scaffold.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text(
+                                            'This name already exists in your friends list!'),
+                                      ),
+                                    );
+                                  }
+                                }
+                              });
+                            },
                             child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.stretch,
-                              mainAxisAlignment: MainAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.center,
                               children: <Widget>[
                                 Text(
-                                  'Notes: ',
+                                  widget.friend.name,
                                   style: TextStyle(
-                                    fontSize: 18.0,
-                                    fontStyle: FontStyle.italic,
+                                      fontSize: 36,
+                                      color: Colors.white,
+                                      fontStyle: FontStyle.italic),
+                                ),
+                                SizedBox(width: 8.0),
+                                Icon(
+                                  Icons.edit,
+                                  color: Theme.of(context).primaryColor,
+                                ),
+                              ],
+                            ),
+                          ),
+                          InkWell(
+                            onTap: () async {
+                              DateTime selectedDate = await showDatePicker(
+                                context: context,
+                                initialDate:
+                                    widget.friend.birthday.toDateTime(),
+                                firstDate: DateTime.now(),
+                                lastDate: DateTime(DateTime.now().year + 1,
+                                    DateTime.now().month, DateTime.now().day),
+                              );
+                              if (selectedDate != null) {
+                                setState(() {
+                                  Provider.of<FriendsList>(context,
+                                          listen: false)
+                                      .updateBirthday(
+                                          widget.friend, selectedDate);
+                                });
+                              }
+                            },
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                Text(
+                                  widget.friend.birthday.toString(),
+                                  style: TextStyle(
+                                    fontSize: 24,
                                     color: Colors.white,
+                                    fontStyle: FontStyle.italic,
+                                  ),
+                                ),
+                                SizedBox(width: 7.0),
+                                widget.friend.birthday.toAstrologyIcon(),
+                                SizedBox(width: 5.0),
+                                Icon(
+                                  Icons.edit,
+                                  color: Theme.of(context).primaryColor,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  Flexible(
+                    flex: 6,
+                    child: Container(
+                      padding: EdgeInsets.symmetric(
+                          horizontal: 24.0, vertical: 10.0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: <Widget>[
+                          Expanded(
+                            flex: 2,
+                            child: IntrinsicHeight(
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: <Widget>[
+                                  Text(
+                                    'Notes: ',
+                                    style: TextStyle(
+                                      fontSize: 18.0,
+                                      fontStyle: FontStyle.italic,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(12.0)),
+                                        border: Border.all(
+                                          color: themeCornfield,
+                                          width: 5.0,
+                                        ),
+                                      ),
+                                      child: TextField(
+                                        decoration: InputDecoration.collapsed(
+                                            hintText: 'Write notes here!'),
+                                        textInputAction: TextInputAction.done,
+                                        maxLines: null,
+                                        controller: notesTextFieldController,
+                                        onSubmitted: (text) =>
+                                            (Provider.of<FriendsList>(context,
+                                                    listen: false)
+                                                .updateNotes(
+                                                    widget.friend, text)),
+                                      ),
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ),
+                          ),
+                          Flexible(
+                            flex: 1,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.max,
+                              children: <Widget>[
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 8.0),
+                                  child: Text(
+                                    'Notify me: ',
+                                    textAlign: TextAlign.start,
+                                    style: TextStyle(
+                                      fontSize: 18.0,
+                                      fontStyle: FontStyle.italic,
+                                      color: Colors.white,
+                                    ),
                                   ),
                                 ),
                                 Expanded(
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(12.0)),
-                                      border: Border.all(
-                                        color: themeCornfield,
-                                        width: 5.0,
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: <Widget>[
+                                      MyCheckBoxTile(
+                                        label: 'in a day',
+                                        index: 0,
+                                        friend: widget.friend,
                                       ),
-                                    ),
-                                    child: TextField(
-                                      decoration: InputDecoration.collapsed(
-                                          hintText: 'Write notes here!'),
-                                      textInputAction: TextInputAction.done,
-                                      maxLines: null,
-                                      controller: notesTextFieldController,
-                                      onSubmitted: (text) =>
-                                          (Provider.of<FriendsList>(context,
-                                                  listen: false)
-                                              .updateNotes(
-                                                  widget.friend, text)),
-                                    ),
+                                      MyCheckBoxTile(
+                                        label: 'in a week',
+                                        index: 1,
+                                        friend: widget.friend,
+                                      ),
+                                      MyCheckBoxTile(
+                                        label: 'in a month',
+                                        index: 2,
+                                        friend: widget.friend,
+                                      ),
+                                    ],
                                   ),
                                 )
                               ],
                             ),
                           ),
-                        ),
-                        Flexible(
-                          flex: 1,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisSize: MainAxisSize.max,
-                            children: <Widget>[
-                              Padding(
-                                padding: const EdgeInsets.only(top: 8.0),
-                                child: Text(
-                                  'Notify me: ',
-                                  textAlign: TextAlign.start,
-                                  style: TextStyle(
-                                    fontSize: 18.0,
-                                    fontStyle: FontStyle.italic,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                              ),
-                              Expanded(
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: <Widget>[
-                                    MyCheckBoxTile(
-                                      label: 'in a day',
-                                      index: 0,
-                                      friend: widget.friend,
-                                    ),
-                                    MyCheckBoxTile(
-                                      label: 'in a week',
-                                      index: 1,
-                                      friend: widget.friend,
-                                    ),
-                                    MyCheckBoxTile(
-                                      label: 'in a month',
-                                      index: 2,
-                                      friend: widget.friend,
-                                    ),
-                                  ],
-                                ),
-                              )
-                            ],
-                          ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
-                )
-              ],
+                  )
+                ],
+              ),
             ),
-          ),
-        ),
+          );
+        }),
       ),
     );
   }

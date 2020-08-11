@@ -76,6 +76,8 @@ class MyDate {
         Astrology.pisces,
         color: Colors.white,
       );
+    else
+      return Icon(Icons.not_interested);
   }
 }
 
