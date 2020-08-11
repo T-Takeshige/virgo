@@ -91,9 +91,17 @@ class _ProfileState extends State<Profile> {
                           CircleAvatar(
                             radius: 63,
                             backgroundColor: Theme.of(context).primaryColor,
-                            child: CircleAvatar(
-                              radius: 60,
-                              backgroundColor: Colors.white,
+                            child: Hero(
+                              tag: '${widget.friend.name} avatar',
+                              placeholderBuilder: (context, heroSize, child) =>
+                                  CircleAvatar(
+                                radius: 60,
+                                backgroundColor: Colors.white,
+                              ),
+                              child: CircleAvatar(
+                                radius: 60,
+                                backgroundColor: Colors.white,
+                              ),
                             ),
                           ),
                           InkWell(

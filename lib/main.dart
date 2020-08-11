@@ -5,11 +5,13 @@ import 'package:virgo/models/my_date.dart';
 import 'package:virgo/models/friend.dart';
 import 'package:provider/provider.dart';
 import 'dart:math' as math;
+import 'package:flutter/scheduler.dart' show timeDilation;
 
 import 'package:virgo/profile_page.dart';
 import 'package:virgo/styles.dart';
 
 void main() {
+  timeDilation = 1.0;
   runApp(MyApp());
 }
 
@@ -235,8 +237,20 @@ class _HomeState extends State<Home> {
       onTap: () {
         Navigator.push(
           context,
-          MaterialPageRoute(
-            builder: (context) => Profile(friend: friend),
+          PageRouteBuilder(
+            transitionDuration: Duration(milliseconds: 800),
+            pageBuilder: (context, _, __) => Profile(friend: friend),
+            transitionsBuilder: (BuildContext context,
+                Animation<double> animation,
+                Animation<double> secondaryAnimation,
+                Widget child) {
+              return Align(
+                child: FadeTransition(
+                  opacity: animation,
+                  child: child,
+                ),
+              );
+            },
           ),
         );
       },
@@ -249,9 +263,16 @@ class _HomeState extends State<Home> {
             CircleAvatar(
               radius: 27,
               backgroundColor: Theme.of(context).primaryColor,
-              child: CircleAvatar(
-                radius: 25,
-                backgroundColor: Colors.white,
+              child: Hero(
+                tag: '${friend.name} avatar',
+                placeholderBuilder: (context, heroSize, child) => CircleAvatar(
+                  radius: 25,
+                  backgroundColor: Colors.white,
+                ),
+                child: CircleAvatar(
+                  radius: 25,
+                  backgroundColor: Colors.white,
+                ),
               ),
             ),
             SizedBox(width: 15),
