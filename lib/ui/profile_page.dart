@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:virgo/birthday_picker.dart';
+import 'package:virgo/ui/widgets/birthday_picker.dart';
 import 'package:virgo/models/friend.dart';
-import 'package:virgo/styles.dart';
+import 'package:virgo/accessories/styles.dart';
 
 // ignore: must_be_immutable
 class Profile extends StatefulWidget {
