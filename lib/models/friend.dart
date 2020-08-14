@@ -4,32 +4,52 @@ import 'package:flutter/cupertino.dart';
 import 'package:virgo/models/my_date.dart';
 
 class Friend {
+  final String _id;
   String _name;
   MyDate _birthday;
   String notes;
   List<bool> notifyMe;
 
-  Friend(name, birthday) {
-    this._name = name;
-    this._birthday = birthday;
-    this.notes = '';
-    this.notifyMe = [false, false, false];
+  Friend(this._id, this._name, this._birthday,
+      {this.notes = '', this.notifyMe = const [false, false, false]});
+
+  String get id => this._id;
+
+  String get name => this._name;
+
+  set name(String name) => this._name = name;
+
+  MyDate get birthday => _birthday;
+
+  set birthday(MyDate birthday) => this._birthday = birthday;
+
+  factory Friend.fromMap(Map<String, dynamic> data) {
+    return Friend(
+        data['id'],
+        data['name'],
+        MyDate(
+          month: data['month'],
+          day: data['day'],
+        ),
+        notes: data['notes'],
+        notifyMe: [
+          data['notifyDay'] == 1 ? true : false,
+          data['notifyWeek'] == 1 ? true : false,
+          data['notifyMonth'] == 1 ? true : false,
+        ]);
   }
 
-  String get name {
-    return _name;
-  }
-
-  set name(String name) {
-    this._name = name;
-  }
-
-  MyDate get birthday {
-    return _birthday;
-  }
-
-  set birthday(MyDate birthday) {
-    this._birthday = birthday;
+  Map<String, dynamic> toMap() {
+    return {
+      'id': this._id,
+      'name': this.name,
+      'month': this._birthday.month,
+      'day': this._birthday.day,
+      'notes': this.notes,
+      'notifyDay': this.notifyMe[0] ? 1 : 0,
+      'notifyWeek': this.notifyMe[1] ? 1 : 0,
+      'notifyMonth': this.notifyMe[2] ? 1 : 0,
+    };
   }
 }
 
