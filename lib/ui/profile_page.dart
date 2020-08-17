@@ -78,6 +78,19 @@ class _ProfileState extends State<Profile> {
               ),
             ),
           ),
+          actions: [
+            IconButton(
+              icon: Icon(
+                Icons.delete,
+                size: 35.0,
+              ),
+              onPressed: () {
+                BlocProvider.of<BdayBloc>(context)
+                    .add(BdayDeletedByIdEv(this.widget.friend.id));
+                Navigator.of(context).pop();
+              },
+            )
+          ],
         ),
         body: SingleChildScrollView(
           child: Container(
