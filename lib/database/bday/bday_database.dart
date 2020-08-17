@@ -4,7 +4,7 @@ import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 
-final birthdayTABLE = 'Birthdays';
+final bdayTABLE = 'Birthdays';
 
 class DatabaseProvider {
   static final DatabaseProvider dbProvider = DatabaseProvider();
@@ -38,7 +38,7 @@ class DatabaseProvider {
 void onUpgrade(Database database, int oldVersion, int newVersion) {}
 
 void initDB(Database database, int version) async {
-  await database.execute('CREATE TABLE $birthdayTABLE ('
+  await database.execute('CREATE TABLE $bdayTABLE ('
       'id TEXT PRIMARY KEY, '
       'name TEXT, '
       'month INTEGER, '

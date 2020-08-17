@@ -1,34 +1,33 @@
 import 'dart:async';
 
-import 'package:virgo/database/database.dart';
+import 'package:virgo/database/bday/bday_database.dart';
 import 'package:virgo/models/friend.dart';
 
-class BirthdayDao {
+class BdayDao {
   final dbProvider = DatabaseProvider.dbProvider;
 
   // Add a new birthday record
-  Future<int> createBirthday(Friend friend) async {
+  Future<int> createBday(Friend friend) async {
     final db = await dbProvider.database;
-    var result = db.insert(birthdayTABLE, friend.toMap());
+    var result = db.insert(bdayTABLE, friend.toMap());
     return result;
   }
 
   // Get all birthdays
-  Future<List<Friend>> getBirthdays(
-      {List<String> columns, String query}) async {
+  Future<List<Friend>> getBdays({List<String> columns, String query}) async {
     final db = await dbProvider.database;
 
     List<Map<String, dynamic>> result;
     if (query != null) {
       if (query.isNotEmpty)
         result = await db.query(
-          birthdayTABLE,
+          bdayTABLE,
           columns: columns,
           where: 'description LIKE ?',
           whereArgs: ['%$query%'],
         );
     } else {
-      result = await db.query(birthdayTABLE, columns: columns);
+      result = await db.query(bdayTABLE, columns: columns);
     }
 
     List<Friend> birthdays = result.isNotEmpty
@@ -38,11 +37,11 @@ class BirthdayDao {
   }
 
   // Update birthdays
-  Future<int> updateBirthday(Friend friend) async {
+  Future<int> updateBday(Friend friend) async {
     final db = await dbProvider.database;
 
     var result = await db.update(
-      birthdayTABLE,
+      bdayTABLE,
       friend.toMap(),
       where: 'id = ?',
       whereArgs: [friend.id],
@@ -52,11 +51,11 @@ class BirthdayDao {
   }
 
   // Delete birthday :(
-  Future<int> deleteBirthday(int id) async {
+  Future<int> deleteBday(String id) async {
     final db = await dbProvider.database;
 
     var result = await db.delete(
-      birthdayTABLE,
+      bdayTABLE,
       where: 'id = ?',
       whereArgs: [id],
     );
@@ -64,9 +63,9 @@ class BirthdayDao {
   }
 
   // Delete ALL birthdays
-  Future deleteAllBirthdays() async {
+  Future deleteAllBdays() async {
     final db = await dbProvider.database;
-    var result = await db.delete(birthdayTABLE);
+    var result = await db.delete(bdayTABLE);
     return result;
   }
 }
