@@ -63,20 +63,18 @@ class _ProfileState extends State<Profile> {
         }
       },
       child: Scaffold(
-        appBar: PreferredSize(
-          preferredSize: Size.fromHeight(65.0),
-          child: AppBar(
-            centerTitle: true,
-            elevation: 0.0,
-            title: Text(
-              'Virgo',
-              style: GoogleFonts.merriweather(
-                textStyle: TextStyle(
-                  fontSize: 48,
-                  fontStyle: FontStyle.italic,
-                  fontWeight: FontWeight.w900,
-                  color: Theme.of(context).primaryColor,
-                ),
+        appBar: AppBar(
+          centerTitle: true,
+          elevation: 0.0,
+          toolbarHeight: 72,
+          title: Text(
+            'Virgo',
+            style: GoogleFonts.merriweather(
+              textStyle: TextStyle(
+                fontSize: 48,
+                fontStyle: FontStyle.italic,
+                fontWeight: FontWeight.w900,
+                color: Theme.of(context).primaryColor,
               ),
             ),
           ),

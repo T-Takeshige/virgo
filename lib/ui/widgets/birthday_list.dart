@@ -4,6 +4,7 @@ import 'package:flutter_sticky_header/flutter_sticky_header.dart';
 import 'package:virgo/accessories/styles.dart';
 import 'package:virgo/bloc/blocs.dart';
 import 'package:virgo/models/friend.dart';
+import 'package:virgo/models/my_date.dart';
 import 'package:virgo/ui/profile_page.dart';
 
 import 'loading.dart';
@@ -126,7 +127,18 @@ class BirthdayList extends StatelessWidget {
           ));
         else {
           List<Friend> friendsList = (state as BdayLoadSuccessSt).bdays;
-          List<Widget> widgets = [];
+          List<Widget> widgets = []..add(SliverStickyHeader(
+              header: Container(
+                height: 60.0,
+                color: Theme.of(context).primaryColor,
+                padding: EdgeInsets.symmetric(horizontal: 16.0),
+                alignment: Alignment.center,
+                child: Text(
+                  'Today is ${dateTimeToString(now)}',
+                  style: const TextStyle(color: Colors.white, fontSize: 24),
+                ),
+              ),
+            ));
 
           if (friendsList.isEmpty) {
             return Container(
