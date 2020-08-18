@@ -6,6 +6,8 @@ import 'package:virgo/bloc/blocs.dart';
 import 'package:virgo/models/friend.dart';
 import 'package:virgo/models/my_date.dart';
 import 'package:virgo/ui/widgets/birthday_list.dart';
+import 'package:virgo/ui/widgets/birthday_picker.dart';
+import 'package:virgo/ui/widgets/name_dialog.dart';
 
 // import 'package:virgo/ui/widgets/loading.dart';
 
@@ -34,12 +36,35 @@ class Home extends StatelessWidget {
         child: Icon(Icons.add),
         backgroundColor: Theme.of(context).primaryColor,
         onPressed: () {
-          Friend friend = Friend(
+          DateTime now = DateTime.now();
+          Friend tmpfriend = Friend(
             Uuid().v1(),
-            'Tak',
-            MyDate(month: 9, day: 5),
+            'Friend',
+            MyDate(month: now.month, day: now.day),
           );
-          BlocProvider.of<BdayBloc>(context).add(BdayAddedEv(friend));
+          showNameDialog(tmpfriend, context).then((name) {
+            if (name != null) {
+              showDialog(
+                context: context,
+                builder: (context) => BirthdayPicker(
+                  month: tmpfriend.birthday.month,
+                  day: tmpfriend.birthday.day,
+                ),
+              ).then((date) {
+                if (date != null) {
+                  Friend friend =
+                      tmpfriend.copyWith(name: name, birthday: date);
+                  BlocProvider.of<BdayBloc>(context).add(BdayAddedEv(friend));
+                }
+              });
+            }
+          });
+          // Friend friend = Friend(
+          //   Uuid().v1(),
+          //   'Tak',
+          //   MyDate(month: 9, day: 5),
+          // );
+          // BlocProvider.of<BdayBloc>(context).add(BdayAddedEv(friend));
         },
       ),
     );

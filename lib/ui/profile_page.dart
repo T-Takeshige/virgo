@@ -5,6 +5,7 @@ import 'package:virgo/bloc/blocs.dart';
 import 'package:virgo/ui/widgets/birthday_picker.dart';
 import 'package:virgo/models/friend.dart';
 import 'package:virgo/accessories/styles.dart';
+import 'package:virgo/ui/widgets/name_dialog.dart';
 
 // ignore: must_be_immutable
 class Profile extends StatefulWidget {
@@ -124,44 +125,8 @@ class _ProfileState extends State<Profile> {
                         ),
                         InkWell(
                           onTap: () {
-                            showDialog(
-                              context: context,
-                              builder: (context) {
-                                final nameTextFieldController =
-                                    TextEditingController()
-                                      ..text = widget.friend.name;
-                                return AlertDialog(
-                                  backgroundColor:
-                                      Theme.of(context).scaffoldBackgroundColor,
-                                  title: Text(
-                                    'Edit name',
-                                    style: TextStyle(color: Colors.white),
-                                  ),
-                                  content: TextField(
-                                    autofocus: true,
-                                    textCapitalization:
-                                        TextCapitalization.words,
-                                    controller: nameTextFieldController,
-                                    textInputAction: TextInputAction.done,
-                                    style: TextStyle(color: Colors.white),
-                                  ),
-                                  actions: [
-                                    RaisedButton(
-                                      child: Text('Cancel'),
-                                      color: Theme.of(context).primaryColor,
-                                      onPressed: () =>
-                                          Navigator.of(context).pop(null),
-                                    ),
-                                    RaisedButton(
-                                      child: Text('Confirm'),
-                                      color: Theme.of(context).primaryColor,
-                                      onPressed: () => Navigator.of(context)
-                                          .pop(nameTextFieldController.text),
-                                    ),
-                                  ],
-                                );
-                              },
-                            ).then((name) {
+                            showNameDialog(this.widget.friend, context)
+                                .then((name) {
                               if (name != null) {
                                 if (widget.friend.name == name) {
                                   Scaffold.of(context).showSnackBar(
