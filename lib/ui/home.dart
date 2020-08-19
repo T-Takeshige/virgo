@@ -59,12 +59,6 @@ class Home extends StatelessWidget {
               });
             }
           });
-          // Friend friend = Friend(
-          //   Uuid().v1(),
-          //   'Tak',
-          //   MyDate(month: 9, day: 5),
-          // );
-          // BlocProvider.of<BdayBloc>(context).add(BdayAddedEv(friend));
         },
       ),
     );

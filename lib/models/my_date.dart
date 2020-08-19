@@ -15,6 +15,17 @@ class MyDate {
     return dateTime;
   }
 
+  DateTime toDateTimeOfBefore(int subByMonth, int subByDay) {
+    int month = this.month - (subByMonth % 12);
+    if (month <= 0) month = 12 - month.abs();
+    DateTime dateTime = DateTime(DateTime.now().year, month, this.day)
+        .subtract(Duration(days: subByDay));
+    if (dateTime.isBefore(DateTime.now()))
+      dateTime =
+          DateTime(DateTime.now().year + 1, dateTime.month, dateTime.day);
+    return dateTime;
+  }
+
   Icon toAstrologyIcon() {
     if ((month == 3 && day >= 21) || (month == 4 && day <= 19))
       return Icon(

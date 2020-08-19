@@ -46,6 +46,9 @@ void initDB(Database database, int version) async {
       'notes TEXT, '
       'notifyDay INTEGER, '
       'notifyWeek INTEGER, '
-      'notifyMonth INTEGER'
+      'notifyMonth INTEGER, '
+      'notifyDayId INTEGER, '
+      'notifyWeekId INTEGER, '
+      'notifyMonthId INTEGER'
       ')');
 }

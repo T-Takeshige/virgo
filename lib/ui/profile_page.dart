@@ -6,6 +6,7 @@ import 'package:virgo/ui/widgets/birthday_picker.dart';
 import 'package:virgo/models/friend.dart';
 import 'package:virgo/accessories/styles.dart';
 import 'package:virgo/ui/widgets/name_dialog.dart';
+import 'package:virgo/ui/widgets/notifyme_checkboxes.dart';
 
 // ignore: must_be_immutable
 class Profile extends StatefulWidget {
@@ -284,65 +285,7 @@ class _ProfileState extends State<Profile> {
                                 ),
                               ),
                               Expanded(
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: <Widget>[
-                                    MyCheckBoxTile(
-                                      label: 'in a day',
-                                      index: 0,
-                                      friend: widget.friend,
-                                      onChanged: () {
-                                        List<bool> notifyMe = [
-                                          ...this.widget.friend.notifyMe
-                                        ];
-                                        notifyMe[0] ^= true;
-                                        this.widget.friend = this
-                                            .widget
-                                            .friend
-                                            .copyWith(notifyMe: notifyMe);
-                                        BlocProvider.of<BdayBloc>(context).add(
-                                            BdayUpdatedEv(this.widget.friend));
-                                        setState(() {});
-                                      },
-                                    ),
-                                    MyCheckBoxTile(
-                                      label: 'in a week',
-                                      index: 1,
-                                      friend: widget.friend,
-                                      onChanged: () {
-                                        List<bool> notifyMe = [
-                                          ...this.widget.friend.notifyMe
-                                        ];
-                                        notifyMe[1] ^= true;
-                                        this.widget.friend = this
-                                            .widget
-                                            .friend
-                                            .copyWith(notifyMe: notifyMe);
-                                        BlocProvider.of<BdayBloc>(context).add(
-                                            BdayUpdatedEv(this.widget.friend));
-                                        setState(() {});
-                                      },
-                                    ),
-                                    MyCheckBoxTile(
-                                      label: 'in a month',
-                                      index: 2,
-                                      friend: widget.friend,
-                                      onChanged: () {
-                                        List<bool> notifyMe = [
-                                          ...this.widget.friend.notifyMe
-                                        ];
-                                        notifyMe[2] ^= true;
-                                        this.widget.friend = this
-                                            .widget
-                                            .friend
-                                            .copyWith(notifyMe: notifyMe);
-                                        BlocProvider.of<BdayBloc>(context).add(
-                                            BdayUpdatedEv(this.widget.friend));
-                                        setState(() {});
-                                      },
-                                    ),
-                                  ],
-                                ),
+                                child: NotifymeCheckboxes(this.widget.friend),
                               )
                             ],
                           ),
@@ -354,61 +297,6 @@ class _ProfileState extends State<Profile> {
               ],
             ),
           ),
-        ),
-      ),
-    );
-  }
-}
-
-class MyCheckBoxTile extends StatelessWidget {
-  final String label;
-  final int index;
-  final Friend friend;
-  final Function onChanged;
-  MyCheckBoxTile({this.label, this.index, this.friend, this.onChanged});
-
-  @override
-  Widget build(BuildContext context) {
-    bool _isSelected = friend.notifyMe[index];
-    return InkWell(
-      onTap: () {
-        onChanged();
-      },
-      child: Padding(
-        padding: EdgeInsets.only(left: 5.0, top: 8.0, bottom: 8.0),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          mainAxisSize: MainAxisSize.max,
-          children: <Widget>[
-            Expanded(
-              child: Text(
-                label,
-                style: TextStyle(
-                  fontSize: 18.0,
-                  fontStyle: FontStyle.italic,
-                  color: Colors.white,
-                ),
-              ),
-            ),
-            SizedBox(
-              height: 24.0,
-              width: 24.0,
-              child: Theme(
-                data: ThemeData(
-                  unselectedWidgetColor: Theme.of(context).primaryColor,
-                ),
-                child: Checkbox(
-                  activeColor: Theme.of(context).primaryColor,
-                  checkColor: Colors.white,
-                  value: _isSelected,
-                  onChanged: (bool value) {
-                    onChanged();
-                  },
-                ),
-              ),
-            ),
-          ],
         ),
       ),
     );
