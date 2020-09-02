@@ -114,7 +114,7 @@ class BirthdayList extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<BdayBloc, BdayState>(
       builder: (context, state) {
-        DateTime now = DateTime.now();
+        DateTime today = DateTime.now();
         print(state);
 
         if (state is BdayLoadingSt)
@@ -134,7 +134,7 @@ class BirthdayList extends StatelessWidget {
                 padding: EdgeInsets.symmetric(horizontal: 16.0),
                 alignment: Alignment.center,
                 child: Text(
-                  'Today is ${dateTimeToString(now)}',
+                  'Today is ${dateTimeToString(today)}',
                   style: const TextStyle(color: Colors.white, fontSize: 24),
                 ),
               ),
@@ -154,18 +154,14 @@ class BirthdayList extends StatelessWidget {
             );
           }
 
-          int index = 0;
           List<int> headerPos = [0, 0, 0, 0];
 
-          // if there are birthdays today, create a new SliverStickyHeader for people
-          // with birthdays today
-          if (friendsList[index].birthday.month == now.month &&
-              friendsList[index].birthday.day == now.day) {
-            while (friendsList[index].birthday.month == now.month &&
-                friendsList[index].birthday.day == now.day) {
-              if (++index == friendsList.length) break;
-            }
-            headerPos[0] = index;
+          // if there are birthdays today, add tiles under "Today" header
+          while (headerPos[0] < friendsList.length &&
+              (friendsList[headerPos[0]].birthday.month == today.month &&
+                  friendsList[headerPos[0]].birthday.day == today.day))
+            headerPos[0]++;
+          if (headerPos[0] > 0) {
             widgets.add(SliverStickyHeader(
               header: _buildImportanceHeader('Today!'),
               sliver: SliverList(
@@ -177,83 +173,71 @@ class BirthdayList extends StatelessWidget {
               ),
             ));
           }
+          headerPos[1] = headerPos[0];
 
-          // if there are birthdays tomorrow, create a new SliverStickyHead for people
-          // with birthdays tomorrow
-          DateTime dateTime = friendsList[index].birthday.toDateTime();
-          if (dateTime.difference(now).inDays <= 1) {
-            while (dateTime.difference(now).inDays <= 1) {
-              if (++index == friendsList.length) break;
-              dateTime = friendsList[index].birthday.toDateTime();
-            }
-            headerPos[1] = index;
+          // if there are birthdays tomorrow, add tiles under "Tomorrow" header
+          while (headerPos[1] < friendsList.length &&
+              (friendsList[headerPos[1]]
+                      .birthday
+                      .toDateTime()
+                      .difference(today)
+                      .inDays <=
+                  1)) headerPos[1]++;
+          if (headerPos[1] > headerPos[0]) {
             widgets.add(SliverStickyHeader(
               header: _buildImportanceHeader('Tomorrow!'),
               sliver: SliverList(
                 delegate: SliverChildBuilderDelegate(
                   (context, i) => _buildBirthdayListTile(
-                    context,
-                    friendsList[headerPos[0] + i],
-                  ),
+                      context, friendsList[headerPos[0] + i]),
                   childCount: headerPos[1] - headerPos[0],
                 ),
               ),
             ));
-          } else {
-            headerPos[1] = headerPos[0];
           }
+          headerPos[2] = headerPos[1];
 
-          // if there are birthdays within a week, create a new SliverStickyHead for
-          // people with birthdays within a week
-          if (dateTime.difference(now).inDays <= 7) {
-            while (dateTime.difference(now).inDays <= 7) {
-              if (++index == friendsList.length) break;
-              dateTime = friendsList[index].birthday.toDateTime();
-            }
-            headerPos[2] = index;
+          // if there are birthdays in a week, add tiles under "In a week" header
+          while (headerPos[2] < friendsList.length &&
+              (friendsList[headerPos[2]]
+                      .birthday
+                      .toDateTime()
+                      .difference(today)
+                      .inDays <=
+                  7)) headerPos[2]++;
+          if (headerPos[2] > headerPos[1]) {
             widgets.add(SliverStickyHeader(
               header: _buildImportanceHeader('In a week'),
               sliver: SliverList(
                 delegate: SliverChildBuilderDelegate(
                   (context, i) => _buildBirthdayListTile(
-                    context,
-                    friendsList[headerPos[1] + i],
-                  ),
+                      context, friendsList[headerPos[1] + i]),
                   childCount: headerPos[2] - headerPos[1],
                 ),
               ),
             ));
-          } else {
-            headerPos[2] = headerPos[1];
           }
+          headerPos[3] = headerPos[2];
 
-          // if there are birthdays next month, create a new SliverStickyHead for
-          // people with birthdays wnext month
-          if (dateTime.month == now.month + 1 || dateTime.month == now.month) {
-            while (dateTime.month == now.month + 1 ||
-                dateTime.month == now.month) {
-              if (++index == friendsList.length) break;
-              dateTime = friendsList[index].birthday.toDateTime();
-            }
-            headerPos[3] = index;
+          // if there are birthdays in a month, add tiles under "In a month" header
+          while (headerPos[3] < friendsList.length &&
+              (friendsList[headerPos[3]].birthday.month == today.month + 1 ||
+                  friendsList[headerPos[3]].birthday.month == today.month))
+            headerPos[3]++;
+          if (headerPos[3] > headerPos[2]) {
             widgets.add(SliverStickyHeader(
               header: _buildImportanceHeader('In a month'),
               sliver: SliverList(
                 delegate: SliverChildBuilderDelegate(
                   (context, i) => _buildBirthdayListTile(
-                    context,
-                    friendsList[headerPos[2] + i],
-                  ),
+                      context, friendsList[headerPos[2] + i]),
                   childCount: headerPos[3] - headerPos[2],
                 ),
               ),
             ));
-          } else {
-            headerPos[3] = headerPos[2];
           }
 
-          // if there are any other people remaining, create a new SliverStickyHead
-          // for them
+          // if there are any other birthdays remaining, add tiles under "In a while" header
           if (headerPos[3] < friendsList.length) {
             widgets.add(SliverStickyHeader(
               header: _buildImportanceHeader('In a while'),

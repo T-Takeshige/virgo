@@ -6,7 +6,7 @@ class Friend extends Equatable {
   final String _name;
   final MyDate _birthday;
   final String notes;
-  final List<bool> notifyMe;
+  // notification ID for the reminders, null if there are no notification
   final List<int> notifyMeId;
 
   Friend(
@@ -14,7 +14,6 @@ class Friend extends Equatable {
     this._name,
     this._birthday, {
     this.notes = '',
-    this.notifyMe = const [false, false, false],
     this.notifyMeId = const [null, null, null],
   });
 
@@ -33,11 +32,6 @@ class Friend extends Equatable {
         day: data['day'],
       ),
       notes: data['notes'],
-      notifyMe: [
-        data['notifyDay'] == 1 ? true : false,
-        data['notifyWeek'] == 1 ? true : false,
-        data['notifyMonth'] == 1 ? true : false,
-      ],
       notifyMeId: [
         data['notifyDayId'],
         data['notifyWeekId'],
@@ -53,9 +47,6 @@ class Friend extends Equatable {
       'month': this._birthday.month,
       'day': this._birthday.day,
       'notes': this.notes,
-      'notifyDay': this.notifyMe[0] ? 1 : 0,
-      'notifyWeek': this.notifyMe[1] ? 1 : 0,
-      'notifyMonth': this.notifyMe[2] ? 1 : 0,
       'notifyDayId': this.notifyMeId[0],
       'notifyWeekId': this.notifyMeId[1],
       'notifyMonthId': this.notifyMeId[2],
@@ -74,17 +65,16 @@ class Friend extends Equatable {
       name ?? this.name,
       birthday ?? this.birthday,
       notes: notes ?? this.notes,
-      notifyMe: notifyMe ?? List.from(this.notifyMe),
       notifyMeId: notifyMeId ?? List.from(this.notifyMeId),
     );
   }
 
   @override
-  List<Object> get props => [id, name, birthday, notes, notifyMe, notifyMeId];
+  List<Object> get props => [id, name, birthday, notes, notifyMeId];
 
   @override
   String toString() =>
-      'Friend: { id: $id, name: $name, birthday: ${birthday.toString()}, notes: $notes, notifyMe: $notifyMe, notifyMeId: $notifyMeId }';
+      'Friend: { id: $id, name: $name, birthday: ${birthday.toString()}, notes: $notes, notifyMeId: $notifyMeId }';
 }
 
 List<Friend> sortFriends(List<Friend> list) {

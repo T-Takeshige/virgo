@@ -73,7 +73,7 @@ class MyCheckBoxTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    bool _isSelected = friend.notifyMe[index];
+    bool _isSelected = friend.notifyMeId[index] != null;
     return InkWell(
       onTap: () {
         onChanged();
@@ -123,9 +123,8 @@ class MyCheckBoxTile extends StatelessWidget {
 // update the notifications accordingly, depending on the checkbox checked
 void _updateAndNotify(
     ScheduleNotifications notifications, Friend friend, int index) {
-  friend.notifyMe[index] ^= true;
-  if (friend.notifyMe[index]) {
-    // if notifyMe for "in a day" is now true,
+  if (friend.notifyMeId[index] == null) {
+    // if notifyMeId is null,
     // schedule a notification and store the notification id
     DateTime notificationDate;
     if (index == 0)
@@ -142,7 +141,7 @@ void _updateAndNotify(
     );
     friend.notifyMeId[index] = id;
   } else {
-    // if notifyMe for "a day before" is now false,
+    // if notifyMeId is not null,
     // cancel the notification using the stored notification id
     notifications.cancel(friend.notifyMeId[index]);
     friend.notifyMeId[index] = null;
