@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import 'package:virgo/bloc/blocs.dart';
+import 'package:virgo/miscellaneous/schedule_notifications.dart';
 import 'package:virgo/ui/widgets/birthday_picker.dart';
 import 'package:virgo/models/friend.dart';
 import 'package:virgo/accessories/styles.dart';
@@ -87,6 +89,14 @@ class _ProfileState extends State<Profile> {
                 size: 35.0,
               ),
               onPressed: () {
+                ScheduleNotifications notifications =
+                    Provider.of<ScheduleNotifications>(context);
+                notifications.cancel(this.widget.friend.alertBirthdayId);
+                this
+                    .widget
+                    .friend
+                    .notifyMeId
+                    .forEach((id) => notifications.cancel(id));
                 BlocProvider.of<BdayBloc>(context)
                     .add(BdayDeletedByIdEv(this.widget.friend.id));
                 Navigator.of(context).pop();

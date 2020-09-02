@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 import 'package:virgo/bloc/blocs.dart';
+import 'package:virgo/miscellaneous/schedule_notifications.dart';
 import 'package:virgo/models/friend.dart';
 import 'package:virgo/models/my_date.dart';
 import 'package:virgo/ui/widgets/birthday_list.dart';
@@ -52,8 +54,17 @@ class Home extends StatelessWidget {
                 ),
               ).then((date) {
                 if (date != null) {
-                  Friend friend =
-                      tmpfriend.copyWith(name: name, birthday: date);
+                  ScheduleNotifications notifications =
+                      Provider.of<ScheduleNotifications>(context,
+                          listen: false);
+                  var id = notifications.schedule(
+                    date.toDateTime(),
+                    title: "It's $name's birthday!",
+                    body: "Wish them a happy birthday!",
+                    payload: tmpfriend.id,
+                  );
+                  Friend friend = tmpfriend.copyWith(
+                      name: name, birthday: date, alertBirthdayId: id);
                   BlocProvider.of<BdayBloc>(context).add(BdayAddedEv(friend));
                 }
               });
