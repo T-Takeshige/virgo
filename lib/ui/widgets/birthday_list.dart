@@ -16,7 +16,7 @@ Widget _buildBirthdayListTile(BuildContext context, Friend friend) {
         context,
         PageRouteBuilder(
           transitionDuration: Duration(milliseconds: 800),
-          pageBuilder: (context, _, __) => Profile(friend),
+          pageBuilder: (context, _, __) => Profile(friend.id),
           transitionsBuilder: (BuildContext context,
               Animation<double> animation,
               Animation<double> secondaryAnimation,

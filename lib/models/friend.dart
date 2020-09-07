@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:virgo/miscellaneous/schedule_notifications.dart';
 import 'package:virgo/models/my_date.dart';
 
 class Friend extends Equatable {
@@ -111,4 +112,41 @@ List<Friend> sortFriends(List<Friend> list) {
     }
   });
   return list;
+}
+
+int makeBirthdayReminder(ScheduleNotifications notifications, String friendName,
+    MyDate friendBirthday, String friendId,
+    {int recency}) {
+  if (recency == null) {
+    return notifications.schedule(
+      friendBirthday.toDateTime(),
+      title: "It's $friendName's birthday!",
+      body: "Wish them a happy birthday!",
+      payload: friendId,
+    );
+  } else {
+    String _makeNotificationTitle(String name, MyDate birthday, int index) {
+      Map<int, String> recency = {
+        0: 'in a day',
+        1: 'in a week',
+        2: 'in a month',
+      };
+
+      return "$name's birthday (${birthday.toString()}) is ${recency[index]}!";
+    }
+
+    DateTime notificationDate;
+    if (recency == 0)
+      notificationDate = friendBirthday.toDateTimeOfBefore(0, 1);
+    else if (recency == 1)
+      notificationDate = friendBirthday.toDateTimeOfBefore(0, 7);
+    else if (recency == 2)
+      notificationDate = friendBirthday.toDateTimeOfBefore(1, 0);
+    return notifications.schedule(
+      notificationDate,
+      title: _makeNotificationTitle(friendName, friendBirthday, recency),
+      body: 'Begin preparing something for them!',
+      payload: friendId,
+    );
+  }
 }

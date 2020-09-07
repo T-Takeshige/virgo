@@ -126,34 +126,13 @@ void _updateAndNotify(
   if (friend.notifyMeId[index] == null) {
     // if notifyMeId is null,
     // schedule a notification and store the notification id
-    DateTime notificationDate;
-    if (index == 0)
-      notificationDate = friend.birthday.toDateTimeOfBefore(0, 1);
-    else if (index == 1)
-      notificationDate = friend.birthday.toDateTimeOfBefore(0, 7);
-    else if (index == 2)
-      notificationDate = friend.birthday.toDateTimeOfBefore(1, 0);
-    var id = notifications.schedule(
-      notificationDate,
-      title: _makeNotificationTitle(friend, index),
-      body: 'Begin preparing something for them!',
-      payload: friend.id,
-    );
-    friend.notifyMeId[index] = id;
+    friend.notifyMeId[index] = makeBirthdayReminder(
+        notifications, friend.name, friend.birthday, friend.id,
+        recency: index);
   } else {
     // if notifyMeId is not null,
     // cancel the notification using the stored notification id
     notifications.cancel(friend.notifyMeId[index]);
     friend.notifyMeId[index] = null;
   }
-}
-
-String _makeNotificationTitle(Friend friend, int index) {
-  Map<int, String> recency = {
-    0: 'in a day',
-    1: 'in a week',
-    2: 'in a month',
-  };
-
-  return '${friend.name}\'s birthday (${friend.birthday.toString()}) is ${recency[index]}!';
 }

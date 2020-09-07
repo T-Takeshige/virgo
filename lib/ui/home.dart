@@ -57,12 +57,8 @@ class Home extends StatelessWidget {
                   ScheduleNotifications notifications =
                       Provider.of<ScheduleNotifications>(context,
                           listen: false);
-                  var id = notifications.schedule(
-                    date.toDateTime(),
-                    title: "It's $name's birthday!",
-                    body: "Wish them a happy birthday!",
-                    payload: tmpfriend.id,
-                  );
+                  var id = makeBirthdayReminder(
+                      notifications, name, date, tmpfriend.id);
                   Friend friend = tmpfriend.copyWith(
                       name: name, birthday: date, alertBirthdayId: id);
                   BlocProvider.of<BdayBloc>(context).add(BdayAddedEv(friend));
