@@ -1,6 +1,11 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:path/path.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:virgo/bloc/blocs.dart';
 import 'package:virgo/miscellaneous/schedule_notifications.dart';
@@ -132,20 +137,44 @@ class _ProfileState extends State<Profile> {
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: <Widget>[
-                              CircleAvatar(
-                                radius: 63,
-                                backgroundColor: Theme.of(context).primaryColor,
-                                child: Hero(
-                                  tag: '${friend.id} avatar',
-                                  placeholderBuilder:
-                                      (context, heroSize, child) =>
-                                          CircleAvatar(
-                                    radius: 60,
-                                    backgroundColor: Colors.white,
-                                  ),
-                                  child: CircleAvatar(
-                                    radius: 60,
-                                    backgroundColor: Colors.white,
+                              Hero(
+                                tag: '${friend.id} avatar',
+                                placeholderBuilder:
+                                    (context, heroSize, child) => CircleAvatar(
+                                  radius: 60,
+                                  backgroundColor: Colors.white,
+                                ),
+                                child: Material(
+                                  color: Colors.transparent,
+                                  child: InkWell(
+                                    onTap: () async {
+                                      final picker = ImagePicker();
+                                      final PickedFile pickedFile =
+                                          await picker.getImage(
+                                        source: ImageSource.gallery,
+                                        imageQuality: 25,
+                                      );
+                                      if (pickedFile == null) {
+                                        return;
+                                      } else {
+                                        File imageFile = File(pickedFile.path);
+                                        print(imageFile.path);
+                                        friend = friend.copyWith(
+                                            avatar:
+                                                imageFile.readAsBytesSync());
+                                        BlocProvider.of<BdayBloc>(context)
+                                            .add(BdayUpdatedEv(friend));
+                                        setState(() {});
+                                      }
+                                    },
+                                    child: CircleAvatar(
+                                      radius: 60,
+                                      backgroundImage: friend.avatar == null
+                                          ? AssetImage(friend.birthday
+                                              .toAstrologyAvatar())
+                                          : MemoryImage(friend.avatar),
+                                      backgroundColor: Colors.white,
+                                    ),
                                   ),
                                 ),
                               ),

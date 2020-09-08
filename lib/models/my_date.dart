@@ -90,6 +90,37 @@ class MyDate {
     else
       return Icon(Icons.not_interested);
   }
+
+  // returns directory to astrology avatar images, not the avatar widget itself
+  String toAstrologyAvatar() {
+    String imageDir = 'assets/images/astrology_avatars/';
+    if ((month == 3 && day >= 21) || (month == 4 && day <= 19))
+      return imageDir + 'aries.png';
+    if ((month == 4 && day >= 20) || (month == 5 && day <= 20))
+      return imageDir + 'taurus.png';
+    if ((month == 5 && day >= 21) || (month == 6 && day <= 20))
+      return imageDir + 'gemini.png';
+    if ((month == 6 && day >= 21) || (month == 7 && day <= 22))
+      return imageDir + 'cancer.png';
+    if ((month == 7 && day >= 23) || (month == 8 && day <= 22))
+      return imageDir + 'leo.png';
+    if ((month == 8 && day >= 22) || (month == 9 && day <= 22))
+      return imageDir + 'virgo.png';
+    if ((month == 9 && day >= 23) || (month == 10 && day <= 22))
+      return imageDir + 'libra.png';
+    if ((month == 10 && day >= 23) || (month == 11 && day <= 21))
+      return imageDir + 'scorpio.png';
+    if ((month == 11 && day >= 22) || (month == 12 && day <= 21))
+      return imageDir + 'sagittarius.png';
+    if ((month == 12 && day >= 22) || (month == 1 && day <= 19))
+      return imageDir + 'capricorn.png';
+    if ((month == 1 && day >= 20) || (month == 2 && day <= 18))
+      return imageDir + 'aquarius.png';
+    if ((month == 2 && day >= 19) || (month == 3 && day <= 20))
+      return imageDir + 'pisces.png';
+    else
+      return null;
+  }
 }
 
 String dateTimeToString(DateTime dateTime) =>

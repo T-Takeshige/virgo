@@ -62,7 +62,7 @@ class MyApp extends StatelessWidget {
         ),
         primaryColorBrightness: Brightness.dark,
         primaryColor: themeCornfield,
-        textTheme: GoogleFonts.merriweatherTextTheme(),
+        textTheme: GoogleFonts.merriweatherSansTextTheme(),
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       home: Home(),

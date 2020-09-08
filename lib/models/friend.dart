@@ -1,6 +1,10 @@
+import 'dart:typed_data';
+
 import 'package:equatable/equatable.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:virgo/miscellaneous/schedule_notifications.dart';
 import 'package:virgo/models/my_date.dart';
+import 'dart:convert';
 
 class Friend extends Equatable {
   final String _id;
@@ -10,6 +14,7 @@ class Friend extends Equatable {
   final int alertBirthdayId;
   // notification ID for the reminders, null if there are no notification
   final List<int> notifyMeId;
+  final Uint8List avatar;
 
   Friend(
     this._id,
@@ -18,6 +23,7 @@ class Friend extends Equatable {
     this.notes = '',
     this.alertBirthdayId,
     this.notifyMeId = const [null, null, null],
+    this.avatar,
   });
 
   String get id => this._id;
@@ -41,6 +47,8 @@ class Friend extends Equatable {
         data['notifyWeekId'],
         data['notifyDayId'],
       ],
+      avatar:
+          data['avatarB64'] == null ? null : base64Decode(data['avatarB64']),
     );
   }
 
@@ -55,6 +63,7 @@ class Friend extends Equatable {
       'notifyDayId': this.notifyMeId[0],
       'notifyWeekId': this.notifyMeId[1],
       'notifyMonthId': this.notifyMeId[2],
+      'avatarB64': this.avatar == null ? null : base64Encode(this.avatar),
     };
   }
 
@@ -64,6 +73,7 @@ class Friend extends Equatable {
     String notes,
     int alertBirthdayId,
     List<int> notifyMeId,
+    Uint8List avatar,
   }) {
     return Friend(
       this.id,
@@ -72,16 +82,17 @@ class Friend extends Equatable {
       notes: notes ?? this.notes,
       alertBirthdayId: alertBirthdayId ?? this.alertBirthdayId,
       notifyMeId: notifyMeId ?? List.from(this.notifyMeId),
+      avatar: avatar ?? this.avatar,
     );
   }
 
   @override
   List<Object> get props =>
-      [id, name, birthday, notes, alertBirthdayId, notifyMeId];
+      [id, name, birthday, notes, alertBirthdayId, notifyMeId, avatar];
 
   @override
   String toString() =>
-      'Friend: { id: $id, name: $name, birthday: ${birthday.toString()}, notes: $notes, alertBirthdayId: $alertBirthdayId, notifyMeId: $notifyMeId }';
+      'Friend: { id: $id, name: $name, birthday: ${birthday.toString()}, notes: $notes, alertBirthdayId: $alertBirthdayId, notifyMeId: $notifyMeId, avatar: ${avatar.toString()} }';
 }
 
 List<Friend> sortFriends(List<Friend> list) {

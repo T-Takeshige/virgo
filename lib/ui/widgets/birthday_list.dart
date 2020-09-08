@@ -37,19 +37,18 @@ Widget _buildBirthdayListTile(BuildContext context, Friend friend) {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           SizedBox(width: 12),
-          CircleAvatar(
-            radius: 27,
-            backgroundColor: Theme.of(context).primaryColor,
-            child: Hero(
-              tag: '${friend.id} avatar',
-              placeholderBuilder: (context, heroSize, child) => CircleAvatar(
-                radius: 25,
-                backgroundColor: Colors.white,
-              ),
-              child: CircleAvatar(
-                radius: 25,
-                backgroundColor: Colors.white,
-              ),
+          Hero(
+            tag: '${friend.id} avatar',
+            placeholderBuilder: (context, heroSize, child) => CircleAvatar(
+              radius: 25,
+              backgroundColor: Colors.white,
+            ),
+            child: CircleAvatar(
+              radius: 25,
+              backgroundImage: friend.avatar == null
+                  ? AssetImage(friend.birthday.toAstrologyAvatar())
+                  : MemoryImage(friend.avatar),
+              backgroundColor: Colors.white,
             ),
           ),
           SizedBox(width: 15),
