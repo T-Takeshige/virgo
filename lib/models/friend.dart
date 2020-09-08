@@ -148,11 +148,14 @@ int makeBirthdayReminder(ScheduleNotifications notifications, String friendName,
 
     DateTime notificationDate;
     if (recency == 0)
-      notificationDate = friendBirthday.toDateTimeOfBefore(0, 1);
+      notificationDate = friendBirthday.toDateTimeOfBefore(0, 1)
+        ..add(Duration(hours: 18));
     else if (recency == 1)
-      notificationDate = friendBirthday.toDateTimeOfBefore(0, 7);
+      notificationDate = friendBirthday.toDateTimeOfBefore(0, 7)
+        ..add(Duration(hours: 18));
     else if (recency == 2)
-      notificationDate = friendBirthday.toDateTimeOfBefore(1, 0);
+      notificationDate = friendBirthday.toDateTimeOfBefore(1, 0)
+        ..add(Duration(hours: 18));
     return notifications.schedule(
       notificationDate,
       title: _makeNotificationTitle(friendName, friendBirthday, recency),
