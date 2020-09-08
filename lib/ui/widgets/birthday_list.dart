@@ -34,38 +34,74 @@ Widget _buildBirthdayListTile(BuildContext context, Friend friend) {
     child: Container(
       height: 80,
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
-          SizedBox(width: 12),
-          Hero(
-            tag: '${friend.id} avatar',
-            placeholderBuilder: (context, heroSize, child) => CircleAvatar(
-              radius: 25,
-              backgroundColor: Colors.white,
-            ),
-            child: CircleAvatar(
-              radius: 25,
-              backgroundImage: friend.avatar == null
-                  ? AssetImage(friend.birthday.toAstrologyAvatar())
-                  : MemoryImage(friend.avatar),
-              backgroundColor: Colors.white,
-            ),
-          ),
-          SizedBox(width: 15),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              SizedBox(width: 15),
+              Hero(
+                tag: '${friend.id} avatar',
+                placeholderBuilder: (context, heroSize, child) => CircleAvatar(
+                  radius: 30,
+                  backgroundColor: Colors.white,
+                ),
+                child: CircleAvatar(
+                  radius: 30,
+                  backgroundImage: friend.avatar == null
+                      ? AssetImage(friend.birthday.toAstrologyAvatar())
+                      : MemoryImage(friend.avatar),
+                  backgroundColor: Colors.white,
+                ),
+              ),
+              SizedBox(width: 12),
               Text(
                 '${friend.name}',
                 textAlign: TextAlign.left,
-                style: TextStyle(color: Colors.white, fontSize: 24),
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 28,
+                ),
               ),
-              Text(
-                '${friend.birthday.toString()}',
-                textAlign: TextAlign.left,
-                style: TextStyle(color: Colors.white, fontSize: 18),
+            ],
+          ),
+          Row(
+            children: [
+              VerticalDivider(
+                color: Colors.white,
+                indent: 12,
+                endIndent: 12,
+                thickness: 1,
+                width: 25,
               ),
+              SizedBox(
+                width: 50,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    Text(
+                      monthToString[friend.birthday.month],
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 24,
+                        fontStyle: FontStyle.italic,
+                      ),
+                    ),
+                    Text(
+                      friend.birthday.day.toString(),
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 20,
+                        fontStyle: FontStyle.italic,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(width: 15)
             ],
           ),
         ],
