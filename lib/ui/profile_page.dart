@@ -111,14 +111,15 @@ class _ProfileState extends State<Profile> {
                     ),
                     onPressed: () {
                       ScheduleNotifications notifications =
-                          Provider.of<ScheduleNotifications>(context);
+                          Provider.of<ScheduleNotifications>(context,
+                              listen: false);
                       notifications.cancel(friend.alertBirthdayId);
 
                       friend.notifyMeId
                           .forEach((id) => notifications.cancel(id));
+                      Navigator.of(context).pop();
                       BlocProvider.of<BdayBloc>(context)
                           .add(BdayDeletedByIdEv(friend.id));
-                      Navigator.of(context).pop();
                     },
                   )
                 ],
