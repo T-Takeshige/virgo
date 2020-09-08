@@ -180,8 +180,8 @@ class BirthdayList extends StatelessWidget {
                       .birthday
                       .toDateTime()
                       .difference(today)
-                      .inDays <=
-                  1)) headerPos[1]++;
+                      .inHours <=
+                  24)) headerPos[1]++;
           if (headerPos[1] > headerPos[0]) {
             widgets.add(SliverStickyHeader(
               header: _buildImportanceHeader('Tomorrow!'),
@@ -202,8 +202,8 @@ class BirthdayList extends StatelessWidget {
                       .birthday
                       .toDateTime()
                       .difference(today)
-                      .inDays <=
-                  7)) headerPos[2]++;
+                      .inHours <=
+                  7 * 24)) headerPos[2]++;
           if (headerPos[2] > headerPos[1]) {
             widgets.add(SliverStickyHeader(
               header: _buildImportanceHeader('In a week'),
