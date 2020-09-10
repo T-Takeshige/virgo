@@ -1,7 +1,6 @@
 import 'dart:typed_data';
 
 import 'package:equatable/equatable.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:virgo/miscellaneous/schedule_notifications.dart';
 import 'package:virgo/models/my_date.dart';
 import 'dart:convert';

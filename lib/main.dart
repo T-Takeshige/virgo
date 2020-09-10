@@ -8,6 +8,7 @@ import 'package:virgo/bloc/simple_bloc_observer.dart';
 import 'package:virgo/ui/home.dart';
 import 'package:virgo/accessories/styles.dart';
 import 'package:virgo/miscellaneous/schedule_notifications.dart';
+import 'package:virgo/ui/profile_page.dart';
 
 void main() {
   // Initialise bloc observer for debugging purposes
@@ -29,10 +30,6 @@ void main() {
     // Channel description
     'This channel is responsible for notifying users of birthdays at certain times according to their preference.',
   );
-  notifications.init(
-    // TODO: direct user to profile page of this person
-    onSelectNotification: (String payload) async {},
-  );
 
   runApp(
     BlocProvider(
@@ -41,7 +38,20 @@ void main() {
       // Allow access to ScheduleNotifications throughout the app
       child: Provider<ScheduleNotifications>(
         create: (context) => notifications,
-        child: MyApp(),
+        builder: (context, child) {
+          notifications.init(
+            onSelectNotification: (String payload) async {
+              // TODO: fix this bs cuz it still doesn't fully work
+              if (payload == null || payload.trim().isEmpty) return null;
+              await Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => Profile(payload)),
+              );
+              return;
+            },
+          );
+          return MyApp();
+        },
       ),
     ),
   );
