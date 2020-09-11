@@ -25,24 +25,6 @@ class Profile extends StatefulWidget {
 class _ProfileState extends State<Profile> {
   final notesTextFieldController = TextEditingController();
 
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   notesTextFieldController.text = widget.friend.notes;
-  // }
-
-  // @override
-  // void dispose() {
-  //   super.dispose();
-  //   notesTextFieldController.dispose();
-  // }
-
-  // @override
-  // void didUpdateWidget(Profile oldWidget) {
-  //   setState(() {});
-  //   super.didUpdateWidget(oldWidget);
-  // }
-
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<BdayBloc, BdayState>(
@@ -53,30 +35,12 @@ class _ProfileState extends State<Profile> {
           return Center(
               child: Text(
             'Error: cannot load friend :<',
-            style: TextStyle(color: Colors.white),
+            style: TextStyle(color: themeWhite),
           ));
         else {
           List<Friend> friendsList = (state as BdayLoadSuccessSt).bdays;
           Friend friend =
               friendsList.firstWhere((f) => f.id == this.widget.friendId);
-          DateTime now = DateTime.now();
-          Color birthdayColor;
-          if (friend.birthday.month == now.month &&
-              friend.birthday.day == now.day)
-            birthdayColor = themeLilac;
-          else {
-            DateTime birthday = friend.birthday.toDateTime();
-            if (birthday.difference(now).inDays <= 1)
-              birthdayColor = themeLilac1;
-            else if (birthday.difference(now).inDays <= 7)
-              birthdayColor = themeLilac2;
-            else if (birthday.month == now.month + 1 ||
-                birthday.month == now.month)
-              birthdayColor = themeLilac3;
-            else
-              birthdayColor = themeLilac4;
-          }
-
           return GestureDetector(
             onTap: () {
               FocusScopeNode currentFocus = FocusScope.of(context);
@@ -89,12 +53,12 @@ class _ProfileState extends State<Profile> {
               appBar: AppBar(
                 centerTitle: true,
                 elevation: 0.0,
-                toolbarHeight: 72,
+                toolbarHeight: 60,
                 title: Text(
-                  'Virgo',
-                  style: GoogleFonts.merriweather(
+                  'Profile',
+                  style: GoogleFonts.merriweatherSans(
                     textStyle: TextStyle(
-                      fontSize: 48,
+                      fontSize: 32,
                       fontStyle: FontStyle.italic,
                       fontWeight: FontWeight.w900,
                       color: Theme.of(context).primaryColor,
@@ -124,34 +88,32 @@ class _ProfileState extends State<Profile> {
               ),
               body: SingleChildScrollView(
                 child: Container(
-                  height: (MediaQuery.of(context).size.height - 65) * 0.95,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: <Widget>[
-                      Flexible(
-                        flex: 4,
-                        child: Container(
-                          color: birthdayColor,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: <Widget>[
-                              Hero(
-                                tag: '${friend.id} avatar',
-                                child: Material(
-                                  color: Colors.transparent,
-                                  child: InkWell(
-                                    onTap: () async {
-                                      final picker = ImagePicker();
-                                      // TODO: try catch for if user denies access to gallery
-                                      final PickedFile pickedFile =
-                                          await picker.getImage(
+                      Container(
+                        color: themeGrey2,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: <Widget>[
+                            SizedBox(height: 10.0),
+                            Hero(
+                              tag: '${friend.id} avatar',
+                              child: Material(
+                                color: Colors.transparent,
+                                child: InkWell(
+                                  onTap: () async {
+                                    final picker = ImagePicker();
+                                    PickedFile pickedFile;
+                                    try {
+                                      pickedFile = await picker.getImage(
                                         source: ImageSource.gallery,
                                         imageQuality: 25,
                                       );
-                                      if (pickedFile == null) {
-                                        return;
-                                      } else {
+                                    } catch (e) {
+                                      print(e);
+                                    } finally {
+                                      if (pickedFile != null) {
                                         File imageFile = File(pickedFile.path);
                                         print(imageFile.path);
                                         friend = friend.copyWith(
@@ -161,113 +123,104 @@ class _ProfileState extends State<Profile> {
                                             .add(BdayUpdatedEv(friend));
                                         setState(() {});
                                       }
-                                    },
-                                    child: CircleAvatar(
-                                      radius: 60,
-                                      backgroundImage: friend.avatar == null
-                                          ? AssetImage(friend.birthday
-                                              .toAstrologyAvatar())
-                                          : MemoryImage(friend.avatar),
-                                      backgroundColor: Colors.white,
-                                    ),
+                                    }
+                                  },
+                                  child: CircleAvatar(
+                                    radius: 60,
+                                    backgroundImage: friend.avatar == null
+                                        ? AssetImage(
+                                            friend.birthday.toAstrologyAvatar())
+                                        : MemoryImage(friend.avatar),
+                                    backgroundColor: themeWhite,
                                   ),
                                 ),
                               ),
-                              NameInkWell(friend),
-                              BirthdayInkWell(friend),
-                            ],
-                          ),
+                            ),
+                            SizedBox(height: 10.0),
+                            NameInkWell(friend),
+                            BirthdayInkWell(friend),
+                            SizedBox(height: 10.0),
+                          ],
                         ),
                       ),
-                      Flexible(
-                        flex: 6,
-                        child: Container(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: 24.0, vertical: 10.0),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: <Widget>[
-                              Expanded(
-                                flex: 2,
-                                child: IntrinsicHeight(
-                                  child: Row(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.stretch,
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: <Widget>[
-                                      Text(
-                                        'Notes: ',
-                                        style: TextStyle(
-                                          fontSize: 18.0,
-                                          fontStyle: FontStyle.italic,
-                                          color: Colors.white,
-                                        ),
-                                      ),
-                                      Expanded(
-                                        child: Container(
-                                          padding: EdgeInsets.all(4.0),
-                                          decoration: BoxDecoration(
-                                            color: Colors.white,
-                                            borderRadius: BorderRadius.all(
-                                                Radius.circular(12.0)),
-                                            border: Border.all(
-                                              color: Theme.of(context)
-                                                  .primaryColor,
-                                              width: 3.0,
-                                            ),
-                                          ),
-                                          child: TextField(
-                                            textCapitalization:
-                                                TextCapitalization.sentences,
-                                            decoration:
-                                                InputDecoration.collapsed(
-                                                    hintText:
-                                                        'Write notes here!'),
-                                            textInputAction:
-                                                TextInputAction.done,
-                                            maxLines: null,
-                                            controller: notesTextFieldController
-                                              ..text = friend.notes,
-                                            onSubmitted: (text) {
-                                              friend =
-                                                  friend.copyWith(notes: text);
-                                              BlocProvider.of<BdayBloc>(context)
-                                                  .add(BdayUpdatedEv(friend));
-                                            },
-                                          ),
-                                        ),
-                                      )
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              Flexible(
-                                flex: 1,
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisSize: MainAxisSize.max,
-                                  children: <Widget>[
-                                    Padding(
-                                      padding: const EdgeInsets.only(top: 8.0),
-                                      child: Text(
-                                        'Notify me: ',
-                                        textAlign: TextAlign.start,
-                                        style: TextStyle(
-                                          fontSize: 18.0,
-                                          fontStyle: FontStyle.italic,
-                                          color: Colors.white,
-                                        ),
+                      Container(
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 24.0, vertical: 16.0),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: <Widget>[
+                            IntrinsicHeight(
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: <Widget>[
+                                  Padding(
+                                    padding: const EdgeInsets.only(right: 8.0),
+                                    child: Text(
+                                      'Notes: ',
+                                      style: TextStyle(
+                                        fontSize: 18.0,
+                                        fontStyle: FontStyle.italic,
+                                        color: themeWhite,
                                       ),
                                     ),
-                                    Expanded(
-                                      child: NotifymeCheckboxes(friend),
-                                    )
-                                  ],
-                                ),
+                                  ),
+                                  Expanded(
+                                    child: Container(
+                                      height: 150,
+                                      padding: EdgeInsets.all(4.0),
+                                      decoration: BoxDecoration(
+                                        color: themeWhite,
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(12.0)),
+                                        border: Border.all(
+                                          color: Theme.of(context).primaryColor,
+                                          width: 3.0,
+                                        ),
+                                      ),
+                                      child: TextField(
+                                        textCapitalization:
+                                            TextCapitalization.sentences,
+                                        decoration: InputDecoration.collapsed(
+                                            hintText: 'Write notes here!'),
+                                        textInputAction: TextInputAction.done,
+                                        maxLines: null,
+                                        controller: notesTextFieldController
+                                          ..text = friend.notes,
+                                        onSubmitted: (text) {
+                                          friend = friend.copyWith(notes: text);
+                                          BlocProvider.of<BdayBloc>(context)
+                                              .add(BdayUpdatedEv(friend));
+                                        },
+                                      ),
+                                    ),
+                                  )
+                                ],
                               ),
-                            ],
-                          ),
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.max,
+                              children: <Widget>[
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 8.0),
+                                  child: Text(
+                                    'Notify me: ',
+                                    textAlign: TextAlign.start,
+                                    style: TextStyle(
+                                      fontSize: 18.0,
+                                      fontStyle: FontStyle.italic,
+                                      color: themeWhite,
+                                    ),
+                                  ),
+                                ),
+                                Expanded(
+                                  child: NotifymeCheckboxes(friend),
+                                )
+                              ],
+                            ),
+                          ],
                         ),
                       )
                     ],

@@ -14,7 +14,7 @@ class Home extends StatelessWidget {
       appBar: AppBar(
         centerTitle: true,
         elevation: 0.0,
-        toolbarHeight: 72,
+        toolbarHeight: 60,
         title: Text(
           'Today is: ${dateTimeToString(today)}',
           style: GoogleFonts.merriweatherSans(
