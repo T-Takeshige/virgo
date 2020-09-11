@@ -114,7 +114,8 @@ Widget _buildBirthdayListTile(BuildContext context, Friend friend) {
 }
 
 Widget _buildImportanceHeader(String importance) {
-  return Padding(
+  return Container(
+    color: themeGrey1,
     padding: const EdgeInsets.only(top: 8.0),
     child: Column(
       children: [
