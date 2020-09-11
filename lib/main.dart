@@ -64,15 +64,19 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Virgo',
       theme: ThemeData(
-        backgroundColor: Colors.grey[900],
-        scaffoldBackgroundColor: themeNavy,
+        backgroundColor: themeGrey1,
+        scaffoldBackgroundColor: themeGrey1,
         appBarTheme: AppBarTheme(
           brightness: Brightness.dark,
-          color: Colors.grey[800],
+          color: themeGrey3,
         ),
         primaryColorBrightness: Brightness.dark,
         primaryColor: themeCornfield,
-        textTheme: GoogleFonts.merriweatherSansTextTheme(),
+        accentColor: themeLavender,
+        textTheme: GoogleFonts.merriweatherSansTextTheme().apply(
+          bodyColor: themeWhite,
+          displayColor: themeWhite,
+        ),
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       home: Home(),

@@ -12,38 +12,41 @@ import 'package:virgo/ui/widgets/name_dialog.dart';
 class AddFriendButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return FloatingActionButton(
-      child: Icon(Icons.add),
-      backgroundColor: Theme.of(context).primaryColor,
-      onPressed: () {
-        DateTime now = DateTime.now();
-        Friend tmpfriend = Friend(
-          Uuid().v1(),
-          'Friend',
-          MyDate(month: now.month, day: now.day),
-        );
-        showNameDialog(tmpfriend, context).then((name) {
-          if (name != null) {
-            showDialog(
-              context: context,
-              builder: (context) => BirthdayPicker(
-                month: tmpfriend.birthday.month,
-                day: tmpfriend.birthday.day,
-              ),
-            ).then((date) {
-              if (date != null) {
-                ScheduleNotifications notifications =
-                    Provider.of<ScheduleNotifications>(context, listen: false);
-                var id = makeBirthdayReminder(
-                    notifications, name, date, tmpfriend.id);
-                Friend friend = tmpfriend.copyWith(
-                    name: name, birthday: date, alertBirthdayId: id);
-                BlocProvider.of<BdayBloc>(context).add(BdayAddedEv(friend));
-              }
-            });
-          }
-        });
-      },
+    return Opacity(
+      opacity: 0.7,
+      child: FloatingActionButton(
+        child: Icon(Icons.add),
+        onPressed: () {
+          DateTime now = DateTime.now();
+          Friend tmpfriend = Friend(
+            Uuid().v1(),
+            'Friend',
+            MyDate(month: now.month, day: now.day),
+          );
+          showNameDialog(tmpfriend, context).then((name) {
+            if (name != null) {
+              showDialog(
+                context: context,
+                builder: (context) => BirthdayPicker(
+                  month: tmpfriend.birthday.month,
+                  day: tmpfriend.birthday.day,
+                ),
+              ).then((date) {
+                if (date != null) {
+                  ScheduleNotifications notifications =
+                      Provider.of<ScheduleNotifications>(context,
+                          listen: false);
+                  var id = makeBirthdayReminder(
+                      notifications, name, date, tmpfriend.id);
+                  Friend friend = tmpfriend.copyWith(
+                      name: name, birthday: date, alertBirthdayId: id);
+                  BlocProvider.of<BdayBloc>(context).add(BdayAddedEv(friend));
+                }
+              });
+            }
+          });
+        },
+      ),
     );
   }
 }

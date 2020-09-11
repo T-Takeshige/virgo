@@ -138,16 +138,12 @@ class _ProfileState extends State<Profile> {
                             children: <Widget>[
                               Hero(
                                 tag: '${friend.id} avatar',
-                                placeholderBuilder:
-                                    (context, heroSize, child) => CircleAvatar(
-                                  radius: 60,
-                                  backgroundColor: Colors.white,
-                                ),
                                 child: Material(
                                   color: Colors.transparent,
                                   child: InkWell(
                                     onTap: () async {
                                       final picker = ImagePicker();
+                                      // TODO: try catch for if user denies access to gallery
                                       final PickedFile pickedFile =
                                           await picker.getImage(
                                         source: ImageSource.gallery,

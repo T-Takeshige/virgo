@@ -15,7 +15,7 @@ Widget _buildBirthdayListTile(BuildContext context, Friend friend) {
       Navigator.push(
         context,
         PageRouteBuilder(
-          transitionDuration: Duration(milliseconds: 800),
+          transitionDuration: Duration(milliseconds: 500),
           pageBuilder: (context, _, __) => Profile(friend.id),
           transitionsBuilder: (BuildContext context,
               Animation<double> animation,
@@ -32,7 +32,14 @@ Widget _buildBirthdayListTile(BuildContext context, Friend friend) {
       );
     },
     child: Container(
+      margin: EdgeInsets.only(left: 12.0, right: 12.0, top: 8.0),
       height: 80,
+      decoration: BoxDecoration(
+        color: themeGrey2,
+        borderRadius: BorderRadius.all(
+          Radius.circular(10.0),
+        ),
+      ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -44,16 +51,15 @@ Widget _buildBirthdayListTile(BuildContext context, Friend friend) {
               SizedBox(width: 15),
               Hero(
                 tag: '${friend.id} avatar',
-                placeholderBuilder: (context, heroSize, child) => CircleAvatar(
-                  radius: 30,
-                  backgroundColor: Colors.white,
-                ),
-                child: CircleAvatar(
-                  radius: 30,
-                  backgroundImage: friend.avatar == null
-                      ? AssetImage(friend.birthday.toAstrologyAvatar())
-                      : MemoryImage(friend.avatar),
-                  backgroundColor: Colors.white,
+                child: Material(
+                  color: Colors.transparent,
+                  child: CircleAvatar(
+                    radius: 30,
+                    backgroundImage: friend.avatar == null
+                        ? AssetImage(friend.birthday.toAstrologyAvatar())
+                        : MemoryImage(friend.avatar),
+                    backgroundColor: themeWhite,
+                  ),
                 ),
               ),
               SizedBox(width: 12),
@@ -61,7 +67,6 @@ Widget _buildBirthdayListTile(BuildContext context, Friend friend) {
                 '${friend.name}',
                 textAlign: TextAlign.left,
                 style: TextStyle(
-                  color: Colors.white,
                   fontSize: 28,
                 ),
               ),
@@ -70,7 +75,7 @@ Widget _buildBirthdayListTile(BuildContext context, Friend friend) {
           Row(
             children: [
               VerticalDivider(
-                color: Colors.white,
+                color: Theme.of(context).primaryColor,
                 indent: 12,
                 endIndent: 12,
                 thickness: 1,
@@ -85,7 +90,6 @@ Widget _buildBirthdayListTile(BuildContext context, Friend friend) {
                     Text(
                       monthToString[friend.birthday.month],
                       style: TextStyle(
-                        color: Colors.white,
                         fontSize: 24,
                         fontStyle: FontStyle.italic,
                       ),
@@ -93,7 +97,6 @@ Widget _buildBirthdayListTile(BuildContext context, Friend friend) {
                     Text(
                       friend.birthday.day.toString(),
                       style: TextStyle(
-                        color: Colors.white,
                         fontSize: 20,
                         fontStyle: FontStyle.italic,
                       ),
@@ -111,35 +114,38 @@ Widget _buildBirthdayListTile(BuildContext context, Friend friend) {
 }
 
 Widget _buildImportanceHeader(String importance) {
-  Color color;
-  switch (importance) {
-    case 'Today!':
-      color = themeLilac;
-      break;
-    case 'Tomorrow!':
-      color = themeLilac1;
-      break;
-    case 'In a week':
-      color = themeLilac2;
-      break;
-    case 'In a month':
-      color = themeLilac3;
-      break;
-    case 'In a while':
-      color = themeLilac4;
-      break;
-    default:
-      color = themeCornfield;
-  }
-
-  return Container(
-    height: 40.0,
-    color: color,
-    padding: EdgeInsets.symmetric(horizontal: 16.0),
-    alignment: Alignment.center,
-    child: Text(
-      importance,
-      style: const TextStyle(color: Colors.white, fontSize: 24),
+  return Padding(
+    padding: const EdgeInsets.only(top: 8.0),
+    child: Column(
+      children: [
+        Divider(
+          color: themeCornfield,
+          height: 1,
+          thickness: 1,
+          indent: 12,
+          endIndent: 12,
+        ),
+        Container(
+          height: 40.0,
+          // color: color,
+          padding: EdgeInsets.symmetric(horizontal: 16.0),
+          alignment: Alignment.center,
+          child: Text(
+            importance,
+            style: const TextStyle(
+              fontSize: 24,
+              fontStyle: FontStyle.italic,
+            ),
+          ),
+        ),
+        Divider(
+          color: themeCornfield,
+          height: 1,
+          thickness: 1,
+          indent: 12,
+          endIndent: 12,
+        ),
+      ],
     ),
   );
 }
@@ -158,19 +164,21 @@ class BirthdayList extends StatelessWidget {
           return Center(
               child: Text(
             'Error: cannot load friends :<',
-            style: TextStyle(color: Colors.white),
+            style: TextStyle(color: themeErrorRed),
           ));
         else {
           List<Friend> friendsList = (state as BdayLoadSuccessSt).bdays;
           List<Widget> widgets = []..add(SliverStickyHeader(
               header: Container(
-                height: 60.0,
-                color: Theme.of(context).primaryColor,
-                padding: EdgeInsets.symmetric(horizontal: 16.0),
-                alignment: Alignment.center,
+                height: 40.0,
+                padding: EdgeInsets.only(left: 16.0, right: 16.0, top: 8.0),
+                alignment: Alignment.centerLeft,
                 child: Text(
-                  'Today is ${dateTimeToString(today)}',
-                  style: const TextStyle(color: Colors.white, fontSize: 24),
+                  'Upcoming Birthdays',
+                  style: const TextStyle(
+                      fontSize: 20,
+                      fontStyle: FontStyle.italic,
+                      fontWeight: FontWeight.w300),
                 ),
               ),
             ));
@@ -181,7 +189,6 @@ class BirthdayList extends StatelessWidget {
                 child: Text(
                   'You have no friends :(',
                   style: TextStyle(
-                    color: Colors.white,
                     fontSize: 24.0,
                   ),
                 ),
