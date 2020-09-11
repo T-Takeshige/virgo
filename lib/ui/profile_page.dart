@@ -168,7 +168,7 @@ class _ProfileState extends State<Profile> {
                                   Expanded(
                                     child: Container(
                                       height: 150,
-                                      padding: EdgeInsets.all(4.0),
+                                      padding: EdgeInsets.all(8.0),
                                       decoration: BoxDecoration(
                                         color: themeWhite,
                                         borderRadius: BorderRadius.all(
@@ -179,6 +179,7 @@ class _ProfileState extends State<Profile> {
                                         ),
                                       ),
                                       child: TextField(
+                                        style: TextStyle(color: Colors.black),
                                         textCapitalization:
                                             TextCapitalization.sentences,
                                         decoration: InputDecoration.collapsed(
