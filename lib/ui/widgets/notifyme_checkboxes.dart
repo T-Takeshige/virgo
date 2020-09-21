@@ -27,7 +27,7 @@ class _NotifymeCheckboxesState extends State<NotifymeCheckboxes> {
           onChanged: () {
             ScheduleNotifications notifications =
                 Provider.of<ScheduleNotifications>(context, listen: false);
-            _updateAndNotify(notifications, this.widget.friend, 0);
+            _updateAndNotify(context, notifications, this.widget.friend, 0);
             BlocProvider.of<BdayBloc>(context)
                 .add(BdayUpdatedEv(this.widget.friend));
             setState(() {});
@@ -40,7 +40,7 @@ class _NotifymeCheckboxesState extends State<NotifymeCheckboxes> {
           onChanged: () {
             ScheduleNotifications notifications =
                 Provider.of<ScheduleNotifications>(context, listen: false);
-            _updateAndNotify(notifications, this.widget.friend, 1);
+            _updateAndNotify(context, notifications, this.widget.friend, 1);
             BlocProvider.of<BdayBloc>(context)
                 .add(BdayUpdatedEv(this.widget.friend));
             setState(() {});
@@ -53,7 +53,7 @@ class _NotifymeCheckboxesState extends State<NotifymeCheckboxes> {
           onChanged: () {
             ScheduleNotifications notifications =
                 Provider.of<ScheduleNotifications>(context, listen: false);
-            _updateAndNotify(notifications, this.widget.friend, 2);
+            _updateAndNotify(context, notifications, this.widget.friend, 2);
             BlocProvider.of<BdayBloc>(context)
                 .add(BdayUpdatedEv(this.widget.friend));
             setState(() {});
@@ -121,14 +121,21 @@ class MyCheckBoxTile extends StatelessWidget {
 
 // This function is to update the widget's Friend object and to
 // update the notifications accordingly, depending on the checkbox checked
-void _updateAndNotify(
-    ScheduleNotifications notifications, Friend friend, int index) {
+void _updateAndNotify(BuildContext context, ScheduleNotifications notifications,
+    Friend friend, int index) {
   if (friend.notifyMeId[index] == null) {
     // if notifyMeId is null,
     // schedule a notification and store the notification id
-    friend.notifyMeId[index] = makeBirthdayReminder(
-        notifications, friend.name, friend.birthday, friend.id,
-        recency: index);
+    try {
+      friend.notifyMeId[index] = makeBirthdayReminder(
+          notifications, friend.name, friend.birthday, friend.id,
+          recency: index);
+      Scaffold.of(context).showSnackBar(SnackBar(
+        content: Text('Reminder set!'),
+      ));
+    } catch (e) {
+      print(e);
+    }
   } else {
     // if notifyMeId is not null,
     // cancel the notification using the stored notification id

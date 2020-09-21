@@ -82,6 +82,7 @@ class _ProfileState extends State<Profile> {
                       Navigator.of(context).pop();
                       BlocProvider.of<BdayBloc>(context)
                           .add(BdayDeletedByIdEv(friend.id));
+                      // TODO: show snackbar to undo delete
                     },
                   )
                 ],
@@ -189,9 +190,19 @@ class _ProfileState extends State<Profile> {
                                         controller: notesTextFieldController
                                           ..text = friend.notes,
                                         onSubmitted: (text) {
-                                          friend = friend.copyWith(notes: text);
-                                          BlocProvider.of<BdayBloc>(context)
-                                              .add(BdayUpdatedEv(friend));
+                                          try {
+                                            friend =
+                                                friend.copyWith(notes: text);
+                                            BlocProvider.of<BdayBloc>(context)
+                                                .add(BdayUpdatedEv(friend));
+                                            Scaffold.of(context)
+                                                .showSnackBar(SnackBar(
+                                              content: Text(
+                                                  'Notes are successfully updated!'),
+                                            ));
+                                          } catch (e) {
+                                            print(e);
+                                          }
                                         },
                                       ),
                                     ),

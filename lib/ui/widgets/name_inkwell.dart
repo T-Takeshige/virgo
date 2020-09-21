@@ -32,32 +32,39 @@ class _NameInkWellState extends State<NameInkWell> {
                 ),
               );
             } else {
-              ScheduleNotifications notifications =
-                  Provider.of<ScheduleNotifications>(context, listen: false);
-              List<int> notifyMeIds = [null, null, null];
-              int alertBirthdayId;
+              try {
+                ScheduleNotifications notifications =
+                    Provider.of<ScheduleNotifications>(context, listen: false);
+                List<int> notifyMeIds = [null, null, null];
+                int alertBirthdayId;
 
-              // Cancel old notifications and create new ones based on the new birthday
-              notifications.cancel(friend.alertBirthdayId);
-              alertBirthdayId = makeBirthdayReminder(
-                  notifications, friend.name, friend.birthday, friend.id);
-              for (var i = 0; i < notifyMeIds.length; i++) {
-                if (friend.notifyMeId[i] != null) {
-                  notifications.cancel(friend.notifyMeId[i]);
-                  makeBirthdayReminder(
-                      notifications, friend.name, friend.birthday, friend.id,
-                      recency: i);
+                // Cancel old notifications and create new ones based on the new birthday
+                notifications.cancel(friend.alertBirthdayId);
+                alertBirthdayId = makeBirthdayReminder(
+                    notifications, friend.name, friend.birthday, friend.id);
+                for (var i = 0; i < notifyMeIds.length; i++) {
+                  if (friend.notifyMeId[i] != null) {
+                    notifications.cancel(friend.notifyMeId[i]);
+                    makeBirthdayReminder(
+                        notifications, friend.name, friend.birthday, friend.id,
+                        recency: i);
+                  }
                 }
+
+                this.widget.friend = friend.copyWith(
+                    name: name,
+                    notifyMeId: List.from(notifyMeIds),
+                    alertBirthdayId: alertBirthdayId);
+
+                BlocProvider.of<BdayBloc>(context)
+                    .add(BdayUpdatedEv(this.widget.friend));
+                Scaffold.of(context).showSnackBar(SnackBar(
+                  content: Text('Name is successfully updated!'),
+                ));
+                setState(() {});
+              } catch (e) {
+                print(e);
               }
-
-              this.widget.friend = friend.copyWith(
-                  name: name,
-                  notifyMeId: List.from(notifyMeIds),
-                  alertBirthdayId: alertBirthdayId);
-
-              BlocProvider.of<BdayBloc>(context)
-                  .add(BdayUpdatedEv(this.widget.friend));
-              setState(() {});
             }
           }
         });
