@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_sticky_header/flutter_sticky_header.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:virgo/accessories/styles.dart';
 import 'package:virgo/bloc/blocs.dart';
 import 'package:virgo/models/friend.dart';
 import 'package:virgo/models/my_date.dart';
 import 'package:virgo/ui/profile_page.dart';
+import 'package:virgo/ui/widgets/search_bar.dart';
 
 import 'loading.dart';
 
@@ -32,7 +34,7 @@ Widget _buildBirthdayListTile(BuildContext context, Friend friend) {
       );
     },
     child: Container(
-      margin: EdgeInsets.only(left: 12.0, right: 12.0, top: 8.0),
+      margin: EdgeInsets.only(left: 12.0, right: 12.0, bottom: 8.0),
       height: 80,
       decoration: BoxDecoration(
         color: themeGrey2,
@@ -66,8 +68,13 @@ Widget _buildBirthdayListTile(BuildContext context, Friend friend) {
               Text(
                 '${friend.name}',
                 textAlign: TextAlign.left,
-                style: TextStyle(
-                  fontSize: 28,
+                style: GoogleFonts.merriweatherSans(
+                  textStyle: TextStyle(
+                    fontSize: 28,
+                    fontStyle: FontStyle.italic,
+                    fontWeight: FontWeight.w800,
+                    color: themeWhite,
+                  ),
                 ),
               ),
             ],
@@ -89,16 +96,24 @@ Widget _buildBirthdayListTile(BuildContext context, Friend friend) {
                   children: <Widget>[
                     Text(
                       monthToString[friend.birthday.month],
-                      style: TextStyle(
-                        fontSize: 24,
-                        fontStyle: FontStyle.italic,
+                      style: GoogleFonts.merriweatherSans(
+                        textStyle: TextStyle(
+                          fontSize: 24,
+                          fontStyle: FontStyle.italic,
+                          fontWeight: FontWeight.w700,
+                          color: themeWhite,
+                        ),
                       ),
                     ),
                     Text(
                       friend.birthday.day.toString(),
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontStyle: FontStyle.italic,
+                      style: GoogleFonts.merriweatherSans(
+                        textStyle: TextStyle(
+                          fontSize: 20,
+                          fontStyle: FontStyle.italic,
+                          fontWeight: FontWeight.w700,
+                          color: themeWhite,
+                        ),
                       ),
                     ),
                   ],
@@ -116,7 +131,7 @@ Widget _buildBirthdayListTile(BuildContext context, Friend friend) {
 Widget _buildImportanceHeader(String importance) {
   return Container(
     color: themeGrey1,
-    padding: const EdgeInsets.only(top: 8.0),
+    padding: const EdgeInsets.only(bottom: 8.0),
     child: Column(
       children: [
         Divider(
@@ -133,9 +148,13 @@ Widget _buildImportanceHeader(String importance) {
           alignment: Alignment.center,
           child: Text(
             importance,
-            style: const TextStyle(
-              fontSize: 24,
-              fontStyle: FontStyle.italic,
+            style: GoogleFonts.merriweatherSans(
+              textStyle: TextStyle(
+                fontSize: 24,
+                fontStyle: FontStyle.italic,
+                fontWeight: FontWeight.w600,
+                color: themeWhite,
+              ),
             ),
           ),
         ),
@@ -169,20 +188,7 @@ class BirthdayList extends StatelessWidget {
           ));
         else {
           List<Friend> friendsList = (state as BdayLoadSuccessSt).bdays;
-          List<Widget> widgets = []..add(SliverStickyHeader(
-              header: Container(
-                height: 40.0,
-                padding: EdgeInsets.only(left: 16.0, right: 16.0, top: 8.0),
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  'Upcoming Birthdays',
-                  style: const TextStyle(
-                      fontSize: 20,
-                      fontStyle: FontStyle.italic,
-                      fontWeight: FontWeight.w300),
-                ),
-              ),
-            ));
+          List<Widget> widgets = [];
 
           if (friendsList.isEmpty) {
             return Container(
@@ -297,7 +303,7 @@ class BirthdayList extends StatelessWidget {
           }
 
           return CustomScrollView(
-            slivers: widgets,
+            slivers: [SearchBar()]..addAll(widgets),
           );
         }
       },

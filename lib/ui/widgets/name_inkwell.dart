@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:virgo/accessories/styles.dart';
 import 'package:virgo/bloc/blocs.dart';
 import 'package:virgo/miscellaneous/schedule_notifications.dart';
 import 'package:virgo/models/friend.dart';
@@ -74,8 +76,14 @@ class _NameInkWellState extends State<NameInkWell> {
         children: <Widget>[
           Text(
             this.widget.friend.name,
-            style: TextStyle(
-                fontSize: 36, color: Colors.white, fontStyle: FontStyle.italic),
+            style: GoogleFonts.merriweatherSans(
+              textStyle: TextStyle(
+                fontSize: 36,
+                fontStyle: FontStyle.italic,
+                fontWeight: FontWeight.w800,
+                color: themeWhite,
+              ),
+            ),
           ),
           SizedBox(width: 8.0),
           Icon(
