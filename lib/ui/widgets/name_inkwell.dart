@@ -29,8 +29,23 @@ class _NameInkWellState extends State<NameInkWell> {
             if (friend.name == name) {
               Scaffold.of(context).showSnackBar(
                 SnackBar(
-                  content: Text(
-                      'Press the name then enter a new name to change the name.'),
+                  duration: Duration(milliseconds: 1500),
+                  content: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Icon(
+                        Icons.warning,
+                        color: Theme.of(context).primaryColor,
+                      ),
+                      SizedBox(width: 12),
+                      Text(
+                        'Name has not been changed.',
+                        style: Theme.of(context).textTheme.bodyText1.copyWith(
+                              fontSize: 16,
+                            ),
+                      ),
+                    ],
+                  ),
                 ),
               );
             } else {
@@ -61,7 +76,23 @@ class _NameInkWellState extends State<NameInkWell> {
                 BlocProvider.of<BdayBloc>(context)
                     .add(BdayUpdatedEv(this.widget.friend));
                 Scaffold.of(context).showSnackBar(SnackBar(
-                  content: Text('Name is successfully updated!'),
+                  duration: Duration(milliseconds: 1500),
+                  content: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Icon(
+                        Icons.check,
+                        color: Theme.of(context).primaryColor,
+                      ),
+                      SizedBox(width: 12),
+                      Text(
+                        'The name has been updated!',
+                        style: Theme.of(context).textTheme.bodyText1.copyWith(
+                              fontSize: 16,
+                            ),
+                      ),
+                    ],
+                  ),
                 ));
                 setState(() {});
               } catch (e) {

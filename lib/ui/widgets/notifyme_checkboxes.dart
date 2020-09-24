@@ -131,7 +131,23 @@ void _updateAndNotify(BuildContext context, ScheduleNotifications notifications,
           notifications, friend.name, friend.birthday, friend.id,
           recency: index);
       Scaffold.of(context).showSnackBar(SnackBar(
-        content: Text('Reminder set!'),
+        duration: Duration(milliseconds: 1500),
+        content: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Icon(
+              Icons.check,
+              color: Theme.of(context).primaryColor,
+            ),
+            SizedBox(width: 12),
+            Text(
+              'Reminder set!',
+              style: Theme.of(context).textTheme.bodyText1.copyWith(
+                    fontSize: 16,
+                  ),
+            ),
+          ],
+        ),
       ));
     } catch (e) {
       print(e);

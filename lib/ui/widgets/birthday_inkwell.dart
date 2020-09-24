@@ -60,7 +60,23 @@ class _BirthdayInkWellState extends State<BirthdayInkWell> {
               BlocProvider.of<BdayBloc>(context).add(BdayUpdatedEv(friend));
               setState(() {});
               Scaffold.of(context).showSnackBar(SnackBar(
-                content: Text('Birthday is successfully updated!'),
+                duration: Duration(milliseconds: 1500),
+                content: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Icon(
+                      Icons.check,
+                      color: Theme.of(context).primaryColor,
+                    ),
+                    SizedBox(width: 12),
+                    Text(
+                      'Birthday has been changed!',
+                      style: Theme.of(context).textTheme.bodyText1.copyWith(
+                            fontSize: 16,
+                          ),
+                    ),
+                  ],
+                ),
               ));
             } catch (e) {
               print(e);
