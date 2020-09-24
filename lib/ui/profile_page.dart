@@ -29,6 +29,7 @@ class _ProfileState extends State<Profile> {
   Widget build(BuildContext context) {
     return BlocBuilder<BdayBloc, BdayState>(
       builder: (context, state) {
+        if (this.widget.friendId == null) return Loading();
         if (state is BdayLoadingSt)
           return Loading();
         else if (state is BdayLoadFailureSt)
@@ -72,6 +73,7 @@ class _ProfileState extends State<Profile> {
                       size: 35.0,
                     ),
                     onPressed: () {
+                      this.widget.friendId = null;
                       ScheduleNotifications notifications =
                           Provider.of<ScheduleNotifications>(context,
                               listen: false);
