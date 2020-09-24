@@ -28,7 +28,6 @@ class BdayBloc extends Bloc<BdayEvent, BdayState> {
     try {
       List<Friend> list = await bdayRepo.getAllBdays();
       print(list);
-      list = sortFriends(list);
       yield BdayLoadSuccessSt(list);
     } catch (e) {
       print(e);
