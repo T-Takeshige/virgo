@@ -7,7 +7,13 @@ import 'package:virgo/ui/widgets/add_friend_button.dart';
 import 'package:virgo/ui/widgets/birthday_list.dart';
 import 'package:virgo/ui/widgets/search_bar.dart';
 
-class Home extends StatelessWidget {
+class Home extends StatefulWidget {
+  @override
+  _HomeState createState() => _HomeState();
+}
+
+class _HomeState extends State<Home> {
+  final GlobalKey<ScaffoldState> _homeKey = GlobalKey<ScaffoldState>();
   @override
   Widget build(BuildContext context) {
     DateTime today = DateTime.now();
@@ -20,6 +26,7 @@ class Home extends StatelessWidget {
         }
       },
       child: Scaffold(
+        key: _homeKey,
         appBar: AppBar(
           centerTitle: true,
           elevation: 0.0,
@@ -43,7 +50,7 @@ class Home extends StatelessWidget {
             mainAxisSize: MainAxisSize.max,
             children: [
               SearchBar(),
-              Expanded(child: BirthdayList()),
+              Expanded(child: BirthdayList(_homeKey)),
             ],
           ),
         ),

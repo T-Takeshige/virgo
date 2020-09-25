@@ -81,10 +81,9 @@ class _ProfileState extends State<Profile> {
 
                       friend.notifyMeId
                           .forEach((id) => notifications.cancel(id));
-                      Navigator.of(context).pop();
+                      Navigator.of(context).pop(friend);
                       BlocProvider.of<BdayBloc>(context)
                           .add(BdayDeletedByIdEv(friend.id));
-                      // TODO: show snackbar to undo delete
                     },
                   )
                 ],

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_sticky_header/flutter_sticky_header.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import 'package:virgo/accessories/styles.dart';
 import 'package:virgo/bloc/blocs.dart';
 import 'package:virgo/models/friend.dart';
@@ -9,10 +10,11 @@ import 'package:virgo/models/my_date.dart';
 import 'package:virgo/ui/profile_page.dart';
 import 'package:virgo/ui/widgets/loading.dart';
 
-Widget _buildBirthdayListTile(BuildContext context, Friend friend) {
+Widget _buildBirthdayListTile(
+    BuildContext context, Friend friend, GlobalKey<ScaffoldState> _homeKey) {
   return InkWell(
-    onTap: () {
-      Navigator.push(
+    onTap: () async {
+      final result = await Navigator.push(
         context,
         PageRouteBuilder(
           transitionDuration: Duration(milliseconds: 500),
@@ -30,6 +32,36 @@ Widget _buildBirthdayListTile(BuildContext context, Friend friend) {
           },
         ),
       );
+      if (result is Friend) {
+        Scaffold.of(context).showSnackBar(
+          SnackBar(
+            duration: Duration(milliseconds: 3000),
+            content: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Icon(
+                  Icons.warning,
+                  color: Theme.of(context).primaryColor,
+                ),
+                SizedBox(width: 12),
+                Text(
+                  'This friend has been deleted.',
+                  style: Theme.of(context).textTheme.bodyText1.copyWith(
+                        fontSize: 16,
+                      ),
+                ),
+              ],
+            ),
+            action: SnackBarAction(
+              label: 'Undo',
+              onPressed: () {
+                BlocProvider.of<BdayBloc>(_homeKey.currentContext)
+                    .add(BdayAddedEv(result));
+              },
+            ),
+          ),
+        );
+      }
     },
     child: Container(
       margin: EdgeInsets.only(left: 12.0, right: 12.0, bottom: 8.0),
@@ -169,6 +201,8 @@ Widget _buildImportanceHeader(String importance) {
 }
 
 class BirthdayList extends StatelessWidget {
+  final GlobalKey<ScaffoldState> _homeKey;
+  BirthdayList(this._homeKey);
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<BdayBloc, BdayState>(
@@ -222,8 +256,8 @@ class BirthdayList extends StatelessWidget {
                       header: _buildImportanceHeader('Today!'),
                       sliver: SliverList(
                         delegate: SliverChildBuilderDelegate(
-                          (context, i) =>
-                              _buildBirthdayListTile(context, friendsList[i]),
+                          (context, i) => _buildBirthdayListTile(
+                              context, friendsList[i], _homeKey),
                           childCount: headerPos[0],
                         ),
                       ),
@@ -245,7 +279,7 @@ class BirthdayList extends StatelessWidget {
                       sliver: SliverList(
                         delegate: SliverChildBuilderDelegate(
                           (context, i) => _buildBirthdayListTile(
-                              context, friendsList[headerPos[0] + i]),
+                              context, friendsList[headerPos[0] + i], _homeKey),
                           childCount: headerPos[1] - headerPos[0],
                         ),
                       ),
@@ -267,7 +301,7 @@ class BirthdayList extends StatelessWidget {
                       sliver: SliverList(
                         delegate: SliverChildBuilderDelegate(
                           (context, i) => _buildBirthdayListTile(
-                              context, friendsList[headerPos[1] + i]),
+                              context, friendsList[headerPos[1] + i], _homeKey),
                           childCount: headerPos[2] - headerPos[1],
                         ),
                       ),
@@ -287,7 +321,7 @@ class BirthdayList extends StatelessWidget {
                       sliver: SliverList(
                         delegate: SliverChildBuilderDelegate(
                           (context, i) => _buildBirthdayListTile(
-                              context, friendsList[headerPos[2] + i]),
+                              context, friendsList[headerPos[2] + i], _homeKey),
                           childCount: headerPos[3] - headerPos[2],
                         ),
                       ),
@@ -301,9 +335,7 @@ class BirthdayList extends StatelessWidget {
                       sliver: SliverList(
                         delegate: SliverChildBuilderDelegate(
                           (context, i) => _buildBirthdayListTile(
-                            context,
-                            friendsList[headerPos[3] + i],
-                          ),
+                              context, friendsList[headerPos[3] + i], _homeKey),
                           childCount: friendsList.length - headerPos[3],
                         ),
                       ),
@@ -318,7 +350,8 @@ class BirthdayList extends StatelessWidget {
                   friendsList.forEach((friend) {
                     if (friend.name
                         .contains(RegExp(searchSt, caseSensitive: false)))
-                      widgets.add(_buildBirthdayListTile(context, friend));
+                      widgets.add(
+                          _buildBirthdayListTile(context, friend, _homeKey));
                   });
                   print(widgets);
                   print('hi00');
