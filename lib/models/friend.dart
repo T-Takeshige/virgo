@@ -126,10 +126,17 @@ List<Friend> sortFriends(List<Friend> list) {
 
 int makeBirthdayReminder(ScheduleNotifications notifications, String friendName,
     MyDate friendBirthday, String friendId,
-    {int recency}) {
+    {int recency, bool forNextYear}) {
+  DateTime addYearToDateTime(DateTime dateTime) {
+    return DateTime(
+        dateTime.year + 1, dateTime.month, dateTime.day, dateTime.hour);
+  }
+
   if (recency == null) {
     return notifications.schedule(
-      friendBirthday.toDateTime(),
+      forNextYear
+          ? addYearToDateTime(friendBirthday.toDateTime())
+          : friendBirthday.toDateTime(),
       title: "It's $friendName's birthday!",
       body: "Wish them a happy birthday!",
       payload: friendId,
@@ -156,7 +163,7 @@ int makeBirthdayReminder(ScheduleNotifications notifications, String friendName,
       notificationDate = friendBirthday.toDateTimeOfBefore(1, 0)
         ..add(Duration(hours: 18));
     return notifications.schedule(
-      notificationDate,
+      forNextYear ? addYearToDateTime(notificationDate) : notificationDate,
       title: _makeNotificationTitle(friendName, friendBirthday, recency),
       body: 'Begin preparing something for them!',
       payload: friendId,

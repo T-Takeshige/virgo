@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:virgo/bloc/blocs.dart';
 import 'package:flutter/scheduler.dart' show timeDilation;
 import 'package:virgo/bloc/simple_bloc_observer.dart';
+import 'package:virgo/models/friend.dart';
 import 'package:virgo/ui/home.dart';
 import 'package:virgo/accessories/styles.dart';
 import 'package:virgo/miscellaneous/schedule_notifications.dart';
@@ -39,18 +40,51 @@ void main() {
       child: Provider<ScheduleNotifications>(
         create: (context) => notifications,
         builder: (context, child) {
-          notifications.init(
-            onSelectNotification: (String payload) async {
-              // TODO: fix this bs cuz it still doesn't fully work
-              if (payload == null || payload.trim().isEmpty) return null;
-              await Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => Profile(payload)),
-              );
-              return;
-            },
+          return BlocListener<BdayBloc, BdayState>(
+            child: Builder(
+              builder: (context) {
+                notifications.init(
+                  onSelectNotification: (String payload) async {
+                    // TODO: fix this bs cuz it still doesn't fully work
+                    if (payload == null || payload.trim().isEmpty) return null;
+                    await Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => Profile(payload)),
+                    );
+                    return;
+                  },
+                  onDidReceiveLocalNotification: (id, title, body, payload) {
+                    if (BlocProvider.of<BdayBloc>(context).state
+                        is BdayLoadSuccessSt) {
+                      Friend friend = (BlocProvider.of<BdayBloc>(context).state
+                              as BdayLoadSuccessSt)
+                          .bdays
+                          .firstWhere((f) => f.id == payload);
+                      if (body == "Wish them a happy birthday!")
+                        makeBirthdayReminder(notifications, friend.name,
+                            friend.birthday, friend.id,
+                            forNextYear: true);
+                      else {
+                        if (title.contains('in a day!'))
+                          makeBirthdayReminder(notifications, friend.name,
+                              friend.birthday, friend.id,
+                              recency: 0, forNextYear: true);
+                        else if (title.contains('in a week!'))
+                          makeBirthdayReminder(notifications, friend.name,
+                              friend.birthday, friend.id,
+                              recency: 1, forNextYear: true);
+                        else
+                          makeBirthdayReminder(notifications, friend.name,
+                              friend.birthday, friend.id,
+                              recency: 2, forNextYear: true);
+                      }
+                    }
+                  },
+                );
+                return MyApp();
+              },
+            ),
           );
-          return MyApp();
         },
       ),
     ),
