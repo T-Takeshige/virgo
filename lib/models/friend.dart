@@ -134,7 +134,7 @@ int makeBirthdayReminder(ScheduleNotifications notifications, String friendName,
 
   if (recency == null) {
     return notifications.schedule(
-      forNextYear
+      (forNextYear ?? false)
           ? addYearToDateTime(friendBirthday.toDateTime())
           : friendBirthday.toDateTime(),
       title: "It's $friendName's birthday!",
@@ -163,7 +163,9 @@ int makeBirthdayReminder(ScheduleNotifications notifications, String friendName,
       notificationDate = friendBirthday.toDateTimeOfBefore(1, 0)
         ..add(Duration(hours: 18));
     return notifications.schedule(
-      forNextYear ? addYearToDateTime(notificationDate) : notificationDate,
+      (forNextYear ?? false)
+          ? addYearToDateTime(notificationDate)
+          : notificationDate,
       title: _makeNotificationTitle(friendName, friendBirthday, recency),
       body: 'Begin preparing something for them!',
       payload: friendId,

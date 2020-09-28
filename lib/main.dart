@@ -40,51 +40,46 @@ void main() {
       child: Provider<ScheduleNotifications>(
         create: (context) => notifications,
         builder: (context, child) {
-          return BlocListener<BdayBloc, BdayState>(
-            child: Builder(
-              builder: (context) {
-                notifications.init(
-                  onSelectNotification: (String payload) async {
-                    // TODO: fix this bs cuz it still doesn't fully work
-                    if (payload == null || payload.trim().isEmpty) return null;
-                    await Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => Profile(payload)),
-                    );
-                    return;
-                  },
-                  onDidReceiveLocalNotification: (id, title, body, payload) {
-                    if (BlocProvider.of<BdayBloc>(context).state
-                        is BdayLoadSuccessSt) {
-                      Friend friend = (BlocProvider.of<BdayBloc>(context).state
-                              as BdayLoadSuccessSt)
-                          .bdays
-                          .firstWhere((f) => f.id == payload);
-                      if (body == "Wish them a happy birthday!")
-                        makeBirthdayReminder(notifications, friend.name,
-                            friend.birthday, friend.id,
-                            forNextYear: true);
-                      else {
-                        if (title.contains('in a day!'))
-                          makeBirthdayReminder(notifications, friend.name,
-                              friend.birthday, friend.id,
-                              recency: 0, forNextYear: true);
-                        else if (title.contains('in a week!'))
-                          makeBirthdayReminder(notifications, friend.name,
-                              friend.birthday, friend.id,
-                              recency: 1, forNextYear: true);
-                        else
-                          makeBirthdayReminder(notifications, friend.name,
-                              friend.birthday, friend.id,
-                              recency: 2, forNextYear: true);
-                      }
-                    }
-                  },
-                );
-                return MyApp();
-              },
-            ),
+          notifications.init(
+            onSelectNotification: (String payload) async {
+              // TODO: fix this bs cuz it still doesn't fully work
+              if (payload == null || payload.trim().isEmpty) return null;
+              await Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => Profile(payload)),
+              );
+              return;
+            },
+            onDidReceiveLocalNotification: (id, title, body, payload) {
+              if (BlocProvider.of<BdayBloc>(context).state
+                  is BdayLoadSuccessSt) {
+                Friend friend = (BlocProvider.of<BdayBloc>(context).state
+                        as BdayLoadSuccessSt)
+                    .bdays
+                    .firstWhere((f) => f.id == payload);
+                if (body == "Wish them a happy birthday!")
+                  makeBirthdayReminder(
+                      notifications, friend.name, friend.birthday, friend.id,
+                      forNextYear: true);
+                else {
+                  if (title.contains('in a day!'))
+                    makeBirthdayReminder(
+                        notifications, friend.name, friend.birthday, friend.id,
+                        recency: 0, forNextYear: true);
+                  else if (title.contains('in a week!'))
+                    makeBirthdayReminder(
+                        notifications, friend.name, friend.birthday, friend.id,
+                        recency: 1, forNextYear: true);
+                  else
+                    makeBirthdayReminder(
+                        notifications, friend.name, friend.birthday, friend.id,
+                        recency: 2, forNextYear: true);
+                }
+              }
+              return;
+            },
           );
+          return MyApp();
         },
       ),
     ),
