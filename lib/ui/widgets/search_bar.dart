@@ -40,7 +40,8 @@ class _SearchBarState extends State<SearchBar> {
         child: InkWell(
           onTap: () {
             FocusScopeNode currentFocus = FocusScope.of(context);
-            if (currentFocus.hasPrimaryFocus) searchBarFocusNode.requestFocus();
+            if (!currentFocus.hasPrimaryFocus)
+              searchBarFocusNode.requestFocus();
           },
           child: Row(
             children: [
@@ -59,6 +60,8 @@ class _SearchBarState extends State<SearchBar> {
                       hintStyle: TextStyle(
                         color: themeWhite,
                         fontSize: 18.0,
+                        fontWeight: FontWeight.w500,
+                        fontStyle: FontStyle.italic,
                       )),
                   textInputAction: TextInputAction.done,
                   onChanged: (search) => BlocProvider.of<SearchCubit>(context)

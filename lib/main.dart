@@ -102,7 +102,7 @@ class MyApp extends StatelessWidget {
         primaryColorBrightness: Brightness.dark,
         primaryColor: themeCornfield,
         accentColor: themeCornfield,
-        textTheme: GoogleFonts.merriweatherTextTheme().apply(
+        textTheme: GoogleFonts.merriweatherSansTextTheme().apply(
           bodyColor: themeWhite,
           displayColor: themeWhite,
         ),
