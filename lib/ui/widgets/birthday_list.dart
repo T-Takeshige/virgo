@@ -311,10 +311,14 @@ class BirthdayList extends StatelessWidget {
 
                   // if there are birthdays in a month, add tiles under "In a month" header
                   while (headerPos[3] < friendsList.length &&
-                      (friendsList[headerPos[3]].birthday.month ==
-                              today.month + 1 ||
-                          friendsList[headerPos[3]].birthday.month ==
-                              today.month)) headerPos[3]++;
+                      ((friendsList[headerPos[3]].birthday.month ==
+                                  today.month + 1 &&
+                              friendsList[headerPos[3]].birthday.day <
+                                  today.day) ||
+                          (friendsList[headerPos[3]].birthday.month ==
+                                  today.month &&
+                              friendsList[headerPos[3]].birthday.day >
+                                  today.day))) headerPos[3]++;
                   if (headerPos[3] > headerPos[2]) {
                     widgets.add(SliverStickyHeader(
                       header: _buildImportanceHeader('In a month'),
