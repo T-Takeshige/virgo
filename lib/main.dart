@@ -44,11 +44,18 @@ void main() {
             onSelectNotification: (String payload) async {
               // TODO: fix this bs cuz it still doesn't fully work
               if (payload == null || payload.trim().isEmpty) return null;
-              await Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => Profile(payload)),
-              );
-              return;
+              if (BlocProvider.of<BdayBloc>(context).state
+                  is BdayLoadSuccessSt) {
+                Friend friend = (BlocProvider.of<BdayBloc>(context).state
+                        as BdayLoadSuccessSt)
+                    .bdays
+                    .firstWhere((f) => f.id == payload);
+                await Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => Profile(friend)),
+                );
+                return;
+              }
             },
             onDidReceiveLocalNotification: (id, title, body, payload) {
               if (BlocProvider.of<BdayBloc>(context).state

@@ -1,27 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:provider/provider.dart';
 import 'package:virgo/accessories/styles.dart';
-import 'package:virgo/bloc/blocs.dart';
-import 'package:virgo/miscellaneous/schedule_notifications.dart';
+import 'package:virgo/bloc/profile/profile.dart';
 import 'package:virgo/models/friend.dart';
 import 'package:virgo/ui/shared/birthday_picker.dart';
 
 // The inkwell in the profile page showing the birthday that when pressed,
 // allows users to change the birthday of that friend
-// ignore: must_be_immutable
-class BirthdayInkWell extends StatefulWidget {
-  Friend friend;
+class BirthdayInkWell extends StatelessWidget {
+  final Friend friend;
   BirthdayInkWell(this.friend);
-  @override
-  _BirthdayInkWellState createState() => _BirthdayInkWellState();
-}
 
-class _BirthdayInkWellState extends State<BirthdayInkWell> {
   @override
   Widget build(BuildContext context) {
-    Friend friend = this.widget.friend;
     return InkWell(
       onTap: () async {
         showDialog(
@@ -32,55 +24,8 @@ class _BirthdayInkWellState extends State<BirthdayInkWell> {
           ),
         ).then((date) {
           if (date != null) {
-            try {
-              friend = friend.copyWith(birthday: date);
-
-              ScheduleNotifications notifications =
-                  Provider.of<ScheduleNotifications>(context, listen: false);
-              List<int> notifyMeIds = [null, null, null];
-              int alertBirthdayId;
-
-              // Cancel old notifications and create new ones based on the new birthday
-              notifications.cancel(friend.alertBirthdayId);
-              alertBirthdayId = makeBirthdayReminder(
-                  notifications, friend.name, friend.birthday, friend.id);
-              for (var i = 0; i < notifyMeIds.length; i++) {
-                if (friend.notifyMeId[i] != null) {
-                  notifications.cancel(friend.notifyMeId[i]);
-                  makeBirthdayReminder(
-                      notifications, friend.name, friend.birthday, friend.id,
-                      recency: i);
-                }
-              }
-
-              this.widget.friend = this.widget.friend = friend.copyWith(
-                  notifyMeId: List.from(notifyMeIds),
-                  alertBirthdayId: alertBirthdayId);
-
-              BlocProvider.of<BdayBloc>(context).add(BdayUpdatedEv(friend));
-              setState(() {});
-              Scaffold.of(context).showSnackBar(SnackBar(
-                duration: Duration(milliseconds: 1500),
-                content: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Icon(
-                      Icons.check,
-                      color: Theme.of(context).primaryColor,
-                    ),
-                    SizedBox(width: 12),
-                    Text(
-                      'Birthday has been changed!',
-                      style: Theme.of(context).textTheme.bodyText1.copyWith(
-                            fontSize: 16,
-                          ),
-                    ),
-                  ],
-                ),
-              ));
-            } catch (e) {
-              print(e);
-            }
+            BlocProvider.of<ProfileCubit>(context)
+                .updateFriend(friend.copyWith(birthday: date));
           }
         });
       },

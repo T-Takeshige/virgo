@@ -1,20 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:provider/provider.dart';
-import 'package:virgo/bloc/blocs.dart';
-import 'package:virgo/miscellaneous/schedule_notifications.dart';
+import 'package:virgo/bloc/profile/profile_cubit.dart';
 import 'package:virgo/models/friend.dart';
 
-class NotifymeCheckboxes extends StatefulWidget {
+class NotifymeCheckboxes extends StatelessWidget {
   final Friend friend;
   NotifymeCheckboxes(this.friend);
-
-  @override
-  _NotifymeCheckboxesState createState() => _NotifymeCheckboxesState();
-}
-
-class _NotifymeCheckboxesState extends State<NotifymeCheckboxes> {
-  // Friend friend = friend;
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -23,40 +14,34 @@ class _NotifymeCheckboxesState extends State<NotifymeCheckboxes> {
         MyCheckBoxTile(
           label: 'a day before',
           index: 0,
-          friend: widget.friend,
+          friend: friend,
           onChanged: () {
-            ScheduleNotifications notifications =
-                Provider.of<ScheduleNotifications>(context, listen: false);
-            _updateAndNotify(context, notifications, this.widget.friend, 0);
-            BlocProvider.of<BdayBloc>(context)
-                .add(BdayUpdatedEv(this.widget.friend));
-            setState(() {});
+            List<int> notifyMeId = List<int>.from(friend.notifyMeId);
+            notifyMeId[0] = notifyMeId[0] == null ? 0 : null;
+            BlocProvider.of<ProfileCubit>(context)
+                .updateFriend(friend.copyWith(notifyMeId: notifyMeId));
           },
         ),
         MyCheckBoxTile(
           label: 'a week before',
           index: 1,
-          friend: widget.friend,
+          friend: friend,
           onChanged: () {
-            ScheduleNotifications notifications =
-                Provider.of<ScheduleNotifications>(context, listen: false);
-            _updateAndNotify(context, notifications, this.widget.friend, 1);
-            BlocProvider.of<BdayBloc>(context)
-                .add(BdayUpdatedEv(this.widget.friend));
-            setState(() {});
+            List<int> notifyMeId = List<int>.from(friend.notifyMeId);
+            notifyMeId[1] = notifyMeId[1] == null ? 1 : null;
+            BlocProvider.of<ProfileCubit>(context)
+                .updateFriend(friend.copyWith(notifyMeId: notifyMeId));
           },
         ),
         MyCheckBoxTile(
           label: 'a month before',
           index: 2,
-          friend: widget.friend,
+          friend: friend,
           onChanged: () {
-            ScheduleNotifications notifications =
-                Provider.of<ScheduleNotifications>(context, listen: false);
-            _updateAndNotify(context, notifications, this.widget.friend, 2);
-            BlocProvider.of<BdayBloc>(context)
-                .add(BdayUpdatedEv(this.widget.friend));
-            setState(() {});
+            List<int> notifyMeId = List<int>.from(friend.notifyMeId);
+            notifyMeId[2] = notifyMeId[2] == null ? 2 : null;
+            BlocProvider.of<ProfileCubit>(context)
+                .updateFriend(friend.copyWith(notifyMeId: notifyMeId));
           },
         ),
       ],
@@ -116,46 +101,5 @@ class MyCheckBoxTile extends StatelessWidget {
         ),
       ),
     );
-  }
-}
-
-// This function is to update the widget's Friend object and to
-// update the notifications accordingly, depending on the checkbox checked
-void _updateAndNotify(BuildContext context, ScheduleNotifications notifications,
-    Friend friend, int index) {
-  if (friend.notifyMeId[index] == null) {
-    // if notifyMeId is null,
-    // schedule a notification and store the notification id
-    try {
-      friend.notifyMeId[index] = makeBirthdayReminder(
-          notifications, friend.name, friend.birthday, friend.id,
-          recency: index);
-      Scaffold.of(context).showSnackBar(SnackBar(
-        duration: Duration(milliseconds: 1500),
-        content: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Icon(
-              Icons.check,
-              color: Theme.of(context).primaryColor,
-            ),
-            SizedBox(width: 12),
-            Text(
-              'Reminder set!',
-              style: Theme.of(context).textTheme.bodyText1.copyWith(
-                    fontSize: 16,
-                  ),
-            ),
-          ],
-        ),
-      ));
-    } catch (e) {
-      print(e);
-    }
-  } else {
-    // if notifyMeId is not null,
-    // cancel the notification using the stored notification id
-    notifications.cancel(friend.notifyMeId[index]);
-    friend.notifyMeId[index] = null;
   }
 }
