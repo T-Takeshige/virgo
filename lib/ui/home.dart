@@ -32,7 +32,7 @@ class _HomeState extends State<Home> {
           elevation: 0.0,
           toolbarHeight: 60,
           title: Text(
-            'Today is: ${dateTimeToString(today)}',
+            'Today is: ${dateTimeToString(today)}, ${weekdayMap[today.weekday]}',
             style: GoogleFonts.merriweatherSans(
               textStyle: TextStyle(
                 fontSize: 32,
