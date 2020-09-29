@@ -247,11 +247,10 @@ class _ProfileState extends State<Profile> {
                                         if (pickedFile != null) {
                                           File imageFile =
                                               File(pickedFile.path);
-                                          BlocProvider.of<BdayBloc>(context)
-                                              .add(BdayUpdatedEv(
-                                                  friend.copyWith(
-                                                      avatar: imageFile
-                                                          .readAsBytesSync())));
+                                          BlocProvider.of<ProfileCubit>(context)
+                                              .updateFriend(friend.copyWith(
+                                                  avatar: imageFile
+                                                      .readAsBytesSync()));
                                         }
                                       }
                                     },
@@ -382,13 +381,3 @@ class _ProfileState extends State<Profile> {
     );
   }
 }
-
-// class SaveButton extends StatelessWidget {
-//   final Friend friend;
-//   SaveButton(this.friend);
-//   @override
-//   Widget build(BuildContext context) {
-
-//     return ;
-//   }
-// }

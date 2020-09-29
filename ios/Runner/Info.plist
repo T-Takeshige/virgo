@@ -43,6 +43,10 @@
 	<false/>
 	<key>UIStatusBarHidden</key>
 	<true/>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>For avatar selection</string>
+	<key>NSCameraUsageDescription</key>
+	<string>For avatar selection</string>
 
 </dict>
 </plist>
