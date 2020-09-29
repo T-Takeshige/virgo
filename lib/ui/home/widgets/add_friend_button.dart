@@ -6,8 +6,8 @@ import 'package:virgo/bloc/blocs.dart';
 import 'package:virgo/miscellaneous/schedule_notifications.dart';
 import 'package:virgo/models/friend.dart';
 import 'package:virgo/models/my_date.dart';
-import 'package:virgo/ui/widgets/birthday_picker.dart';
-import 'package:virgo/ui/widgets/name_dialog.dart';
+import 'package:virgo/ui/shared/birthday_picker.dart';
+import 'package:virgo/ui/shared/name_dialog.dart';
 
 class AddFriendButton extends StatelessWidget {
   @override

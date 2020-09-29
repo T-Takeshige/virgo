@@ -6,7 +6,7 @@ import 'package:virgo/accessories/styles.dart';
 import 'package:virgo/bloc/blocs.dart';
 import 'package:virgo/miscellaneous/schedule_notifications.dart';
 import 'package:virgo/models/friend.dart';
-import 'package:virgo/ui/widgets/name_dialog.dart';
+import 'package:virgo/ui/shared/name_dialog.dart';
 
 // The inkwell in the profile page showing the name that when pressed,
 // allows users to change the name of that friend

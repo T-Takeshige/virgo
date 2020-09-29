@@ -3,9 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:virgo/bloc/blocs.dart';
 import 'package:virgo/models/my_date.dart';
-import 'package:virgo/ui/widgets/add_friend_button.dart';
-import 'package:virgo/ui/widgets/birthday_list.dart';
-import 'package:virgo/ui/widgets/search_bar.dart';
+import 'package:virgo/ui/home/widgets/add_friend_button.dart';
+import 'package:virgo/ui/home/widgets/birthday_list.dart';
+import 'package:virgo/ui/home/widgets/search_bar.dart';
 
 class Home extends StatefulWidget {
   @override

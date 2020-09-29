@@ -6,7 +6,7 @@ import 'package:virgo/accessories/styles.dart';
 import 'package:virgo/bloc/blocs.dart';
 import 'package:virgo/miscellaneous/schedule_notifications.dart';
 import 'package:virgo/models/friend.dart';
-import 'package:virgo/ui/widgets/birthday_picker.dart';
+import 'package:virgo/ui/shared/birthday_picker.dart';
 
 // The inkwell in the profile page showing the birthday that when pressed,
 // allows users to change the birthday of that friend

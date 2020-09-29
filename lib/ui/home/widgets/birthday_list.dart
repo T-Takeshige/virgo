@@ -2,13 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_sticky_header/flutter_sticky_header.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:provider/provider.dart';
 import 'package:virgo/accessories/styles.dart';
 import 'package:virgo/bloc/blocs.dart';
 import 'package:virgo/models/friend.dart';
 import 'package:virgo/models/my_date.dart';
-import 'package:virgo/ui/profile_page.dart';
-import 'package:virgo/ui/widgets/loading.dart';
+import 'package:virgo/ui/profile/profile_page.dart';
+import 'package:virgo/ui/shared/loading.dart';
 
 Widget _buildBirthdayListTile(
     BuildContext context, Friend friend, GlobalKey<ScaffoldState> _homeKey) {

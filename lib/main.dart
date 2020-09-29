@@ -6,10 +6,10 @@ import 'package:virgo/bloc/blocs.dart';
 import 'package:flutter/scheduler.dart' show timeDilation;
 import 'package:virgo/bloc/simple_bloc_observer.dart';
 import 'package:virgo/models/friend.dart';
-import 'package:virgo/ui/home.dart';
+import 'package:virgo/ui/home/home.dart';
 import 'package:virgo/accessories/styles.dart';
 import 'package:virgo/miscellaneous/schedule_notifications.dart';
-import 'package:virgo/ui/profile_page.dart';
+import 'package:virgo/ui/profile/profile_page.dart';
 
 void main() {
   // Initialise bloc observer for debugging purposes

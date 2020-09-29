@@ -7,12 +7,12 @@ import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:virgo/bloc/blocs.dart';
 import 'package:virgo/miscellaneous/schedule_notifications.dart';
-import 'package:virgo/ui/widgets/birthday_inkwell.dart';
+import 'package:virgo/ui/profile/widgets/birthday_inkwell.dart';
 import 'package:virgo/models/friend.dart';
 import 'package:virgo/accessories/styles.dart';
-import 'package:virgo/ui/widgets/loading.dart';
-import 'package:virgo/ui/widgets/name_inkwell.dart';
-import 'package:virgo/ui/widgets/notifyme_checkboxes.dart';
+import 'package:virgo/ui/shared/loading.dart';
+import 'package:virgo/ui/profile/widgets/name_inkwell.dart';
+import 'package:virgo/ui/profile/widgets/notifyme_checkboxes.dart';
 
 // ignore: must_be_immutable
 class Profile extends StatefulWidget {
